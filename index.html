@@ -3,6 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="favicon.svg">
 <title>Skill Shelf</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
@@ -44,6 +45,7 @@
 }
 
 *{box-sizing:border-box;}
+.he{direction:rtl;text-align:right;unicode-bidi:isolate;}
 @keyframes riseIn{
   from{opacity:0;transform:translateY(10px);}
   to{opacity:1;transform:translateY(0);}
@@ -315,87 +317,87 @@ header p{
   <header>
     <h1>Skill Shelf</h1>
     <div class="rule"></div>
-    <p>Skills and plugins installed on top of stock Claude — grouped by the plugin they came with, so you can see everything a plugin adds at once.</p>
+    <p class="he">סקילים ותוספים (plugins) שהותקנו מעבר לקלוד הבסיסי — מקובצים לפי התוסף שאיתו הגיעו, כדי לראות בבת אחת את כל מה שתוסף מוסיף.</p>
   </header>
 
   <div class="tabs">
-    <button type="button" class="tab active" data-view="shelf">Skill Shelf</button>
-    <button type="button" class="tab" data-view="trending">Trending — last 30 days</button>
+    <button type="button" class="tab active he" data-view="shelf">מדף הסקילים</button>
+    <button type="button" class="tab he" data-view="trending">חם החודש — 30 הימים האחרונים</button>
   </div>
 
   <div class="view active" id="view-shelf">
     <div class="controls">
-      <button type="button" id="expandAll">Expand all</button>
-      <button type="button" id="collapseAll">Collapse all</button>
+      <button type="button" id="expandAll" class="he">הרחב הכול</button>
+      <button type="button" id="collapseAll" class="he">כווץ הכול</button>
     </div>
 
-    <p class="trend-note">This list is maintained by hand — to add or update a skill, edit index.html in this repo (or ask Claude to do it and push the change).</p>
+    <p class="trend-note he">הרשימה מתוחזקת ידנית — כדי להוסיף או לעדכן סקיל, ערכו את index.html בריפו (או בקשו מקלוד לעשות זאת ולדחוף את השינוי).</p>
 
-    <p class="count" id="count"></p>
+    <p class="count he" id="count"></p>
     <div id="groups"></div>
-    <p class="empty" id="empty" hidden>Nothing here yet.</p>
+    <p class="empty he" id="empty" hidden>אין כאן כלום עדיין.</p>
   </div>
 
   <div class="view" id="view-trending">
-    <p class="trend-note">Five things that showed up or picked up real traction across the Claude Code ecosystem in the past month — pulled from marketplace install counts, launch coverage, and the community directories teams actually use to find this stuff.</p>
+    <p class="trend-note he">חמישה דברים שצצו או צברו תאוצה אמיתית באקוסיסטם של Claude Code בחודש האחרון — מבוסס על מספרי התקנות, סיקור השקות, והדיירקטוריז שהקהילה בפועל משתמשת בהם.</p>
     <div class="trend-list" id="trendList"></div>
-    <p class="trend-sources">Curated 2026-09-08. Sources: skills.sh / Skillselion registry, the official anthropics/claude-plugins-official marketplace, agentplugins/agent-plugins-spec, and VoltAgent's awesome-agent-skills — re-check periodically, this list ages.</p>
+    <p class="trend-sources he">נאסף בתאריך 2026-09-08. מקורות: מרשם skills.sh / Skillselion, השוק הרשמי anthropics/claude-plugins-official, agentplugins/agent-plugins-spec, ואוסף awesome-agent-skills של VoltAgent — כדאי לבדוק מחדש מדי פעם, הרשימה הזו מתיישנת.</p>
   </div>
 </div>
 
 <script>
 const skills = [
-  { name: "brainstorming", description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "dispatching-parallel-agents", description: "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "executing-plans", description: "Use when you have a written implementation plan to execute in a separate session with review checkpoints.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "finishing-a-development-branch", description: "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "receiving-code-review", description: "Use when receiving code review feedback, before implementing suggestions, especially if it seems unclear or questionable.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "requesting-code-review", description: "Use when completing tasks, implementing major features, or before merging to verify work meets requirements.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "subagent-driven-development", description: "Use when executing implementation plans with independent tasks in the current session.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "systematic-debugging", description: "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "test-driven-development", description: "Use when implementing any feature or bugfix, before writing implementation code.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "using-git-worktrees", description: "Use when starting feature work that needs isolation from the current workspace or before executing implementation plans.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "using-superpowers", description: "Use when starting any conversation - establishes how to find and use skills.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "verification-before-completion", description: "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "writing-plans", description: "Use when you have a spec or requirements for a multi-step task, before touching code.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "writing-skills", description: "Use when creating new skills, editing existing skills, or verifying skills work before deployment.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "ponytail", description: "Forces the laziest solution that actually works - simplest, shortest, most minimal. YAGNI, stdlib-first coding discipline.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-audit", description: "Whole-repo audit for over-engineering - a ranked list of what to delete, simplify, or replace with stdlib.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-debt", description: "Harvest every `ponytail:` comment in the codebase into a debt ledger of deliberate shortcuts.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-gain", description: "Shows ponytail's measured impact as a compact scoreboard: less code, less cost, more speed.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-help", description: "Quick-reference card for all ponytail modes, skills, and commands.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-review", description: "Code review focused exclusively on over-engineering - what to delete, not correctness bugs.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" }
+  { name: "brainstorming", description: "חובה להשתמש בזה לפני כל עבודה יצירתית — יצירת פיצ'רים, בניית קומפוננטות, הוספת פונקציונליות או שינוי התנהגות.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "dispatching-parallel-agents", description: "שימוש כאשר יש 2 משימות עצמאיות או יותר שאפשר לבצע בלי מצב משותף או תלות רציפה ביניהן.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "executing-plans", description: "שימוש כשיש תוכנית יישום כתובה להרצה בסשן נפרד עם נקודות בקרה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "finishing-a-development-branch", description: "שימוש כשהיישום הושלם, כל הבדיקות עוברות, וצריך להחליט איך לשלב את העבודה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "receiving-code-review", description: "שימוש בקבלת משוב על code review, לפני יישום ההצעות — במיוחד אם הן לא ברורות או מוטלות בספק.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "requesting-code-review", description: "שימוש בסיום משימות, יישום פיצ'רים משמעותיים, או לפני מיזוג — כדי לוודא שהעבודה עומדת בדרישות.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "subagent-driven-development", description: "שימוש בהרצת תוכניות יישום עם משימות עצמאיות באותו הסשן.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "systematic-debugging", description: "שימוש כשנתקלים בבאג, כישלון בדיקה, או התנהגות לא צפויה — לפני הצעת תיקון.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "test-driven-development", description: "שימוש בכתיבת כל פיצ'ר או תיקון באג — לפני כתיבת קוד היישום.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "using-git-worktrees", description: "שימוש כשמתחילים עבודה על פיצ'ר שדורש בידוד מהסביבה הנוכחית, או לפני הרצת תוכניות יישום.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "using-superpowers", description: "שימוש בתחילת כל שיחה — קובע איך למצוא ולהשתמש בסקילים.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "verification-before-completion", description: "שימוש לפני שמכריזים שהעבודה הושלמה, תוקנה או עוברת — לפני קומיט או יצירת PR.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "writing-plans", description: "שימוש כשיש ספק או דרישות למשימה רב-שלבית — לפני נגיעה בקוד.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "writing-skills", description: "שימוש ביצירת סקילים חדשים, עריכת קיימים, או בדיקה שהם עובדים לפני פריסה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "ponytail", description: "כופה את הפתרון העצלן ביותר שבאמת עובד — הכי פשוט, הכי קצר, הכי מינימלי. משמעת קידוד לפי YAGNI ועדיפות ל-stdlib.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-audit", description: "ביקורת על כל הריפו לאיתור over-engineering — רשימה מדורגת של מה למחוק, לפשט, או להחליף ב-stdlib.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-debt", description: "אוסף כל הערת `ponytail:` בקוד לתוך רשימת חובות של קיצורי דרך מכוונים.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-gain", description: "מציג את האפקט הנמדד של ponytail בלוח תוצאות קומפקטי: פחות קוד, פחות עלות, יותר מהירות.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-help", description: "כרטיס עזר מהיר לכל המצבים, הסקילים והפקודות של ponytail.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-review", description: "ביקורת קוד שמתמקדת אך ורק ב-over-engineering — מה למחוק, לא באגים לוגיים.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" }
 ];
 
 const TRENDING = [
   {
     name: "Agent Plugins 1.0.0",
-    forWhom: "Plugin authors & platform teams",
-    description: "New open standard (shipped Aug 6, 2026) from Vercel, AWS, Cursor, Microsoft, OpenAI and Google for packaging a Skill + its MCP servers into one folder that runs unmodified across Claude Code, Cursor, Codex and Copilot.",
+    forWhom: "למפתחי תוספים ולצוותי פלטפורמה",
+    description: "תקן פתוח חדש (יצא ב-6 באוגוסט 2026) מבית Vercel, AWS, Cursor, Microsoft, OpenAI ו-Google, לאריזת סקיל יחד עם שרתי ה-MCP שלו בתיקייה אחת שרצה בלי שינוי על פני Claude Code, Cursor, Codex ו-Copilot.",
     link: "https://github.com/agentplugins/agent-plugins-spec"
   },
   {
     name: "find-skills",
-    forWhom: "Anyone tired of reinventing a skill",
-    description: "The most-installed skill in the ecosystem (3M+ installs). Teaches Claude to search the open skills.sh registry mid-task and suggest vetted, ranked packages instead of writing one from scratch.",
+    forWhom: "למי שנמאס לו להמציא סקיל מחדש",
+    description: "הסקיל המותקן ביותר באקוסיסטם (מעל 3 מיליון התקנות). מלמד את קלוד לחפש במרשם הפתוח skills.sh באמצע משימה ולהציע חבילות מדורגות ומאומתות, במקום לכתוב הכול מאפס.",
     link: "https://github.com/vercel-labs/skills"
   },
   {
     name: "pr-review-toolkit",
-    forWhom: "Engineering / studio teams",
-    description: "Official Anthropic plugin adding specialized PR review agents across six dimensions — tests, silent failures, comments, types, quality, security — instead of one generic reviewer pass.",
+    forWhom: "לצוותי הנדסה / סטודיו",
+    description: "תוסף רשמי של Anthropic שמוסיף סוכני בדיקת PR מיוחדים בשישה ממדים — בדיקות, כשלים שקטים, הערות, טייפים, איכות, אבטחה — במקום מעבר ביקורת גנרי אחד.",
     link: "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit"
   },
   {
     name: "awesome-agent-skills",
-    forWhom: "Browsing before building",
-    description: "A curated, actively-updated collection of 1000+ agent skills from official teams and the community, cross-compatible with Claude Code, Cursor, Codex and Gemini CLI — worth a search before writing a new skill.",
+    forWhom: "לגלישה לפני בנייה מאפס",
+    description: "אוסף מתוחזק ומעודכן של יותר מ-1000 סקילים מצוותים רשמיים ומהקהילה, תואם ל-Claude Code, Cursor, Codex ו-Gemini CLI — שווה לחפש בו לפני שכותבים סקיל חדש.",
     link: "https://github.com/VoltAgent/awesome-agent-skills"
   },
   {
     name: "claude-skills (380+ bundle)",
-    forWhom: "Non-engineering roles (CSM, marketing, ops)",
-    description: "380+ skills, agents and commands spanning engineering, marketing, product, compliance, research and business ops — useful if you want ready-made skills outside pure dev workflows.",
+    forWhom: "לתפקידים לא-הנדסיים (CSM, שיווק, אופס)",
+    description: "מעל 380 סקילים, סוכנים ופקודות שמכסים הנדסה, שיווק, מוצר, ציות, מחקר ותפעול עסקי — שימושי אם רוצים סקילים מוכנים מעבר לעבודת פיתוח טהורה.",
     link: "https://github.com/alirezarezvani/claude-skills"
   }
 ];
@@ -420,7 +422,7 @@ function render(){
   const groups = groupBy(skills);
   const names = Object.keys(groups).sort((a,b) => a.localeCompare(b));
 
-  count.textContent = `${skills.length} skill${skills.length===1?'':'s'} across ${names.length} plugin${names.length===1?'':'s'}`;
+  count.textContent = `${skills.length} סקילים · ${names.length} תוספים`;
   empty.hidden = skills.length !== 0;
 
   wrap.innerHTML = names.map((name, gi) => {
@@ -429,14 +431,14 @@ function render(){
     return `
     <details class="group" open style="animation-delay:${Math.min(gi*70,350)}ms">
       <summary>
-        <span class="gname">${escapeHtml(name)} <span style="font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:0.8rem;color:var(--muted);">${items.length} skill${items.length===1?'':'s'}</span></span>
+        <span class="gname">${escapeHtml(name)} <span style="font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:0.8rem;color:var(--muted);">${items.length} סקילים</span></span>
         <span class="gsource">${escapeHtml(source)}</span>
       </summary>
       <div class="grid">
         ${items.map((s, ci) => `
           <div class="card" style="animation-delay:${Math.min(ci*45,300)}ms">
             <h3>${escapeHtml(s.name)}</h3>
-            <p>${escapeHtml(s.description)}</p>
+            <p class="he">${escapeHtml(s.description)}</p>
             <a class="src" href="${escapeHtml(s.link)}" target="_blank" rel="noopener">${escapeHtml(s.link)}</a>
           </div>
         `).join('')}
@@ -458,8 +460,8 @@ function renderTrending(){
       <span class="trend-rank">${i+1}</span>
       <div>
         <h3>${escapeHtml(t.name)}</h3>
-        <div class="trend-for">${escapeHtml(t.forWhom)}</div>
-        <p>${escapeHtml(t.description)}</p>
+        <div class="trend-for he">${escapeHtml(t.forWhom)}</div>
+        <p class="he">${escapeHtml(t.description)}</p>
         <a class="src" href="${escapeHtml(t.link)}" target="_blank" rel="noopener">${escapeHtml(t.link)}</a>
       </div>
     </div>
