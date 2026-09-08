@@ -317,7 +317,7 @@ header p{
   <header>
     <h1>Skill Shelf</h1>
     <div class="rule"></div>
-    <p class="he">סקילים ותוספים (plugins) שהותקנו מעבר לקלוד הבסיסי — מקובצים לפי התוסף שאיתו הגיעו, כדי לראות בבת אחת את כל מה שתוסף מוסיף.</p>
+    <p class="he">רשימה של כלים נוספים שהתקנו על קלוד, כדי שיידע לעשות דברים שהוא לא יודע לעשות מהקופסה. מחולק לפי החבילה שכל כלי הגיע איתה.</p>
   </header>
 
   <div class="tabs">
@@ -331,7 +331,7 @@ header p{
       <button type="button" id="collapseAll" class="he">כווץ הכול</button>
     </div>
 
-    <p class="trend-note he">הרשימה מתוחזקת ידנית — כדי להוסיף או לעדכן סקיל, ערכו את index.html בריפו (או בקשו מקלוד לעשות זאת ולדחוף את השינוי).</p>
+    <p class="trend-note he">הרשימה נשמרת ידנית. רוצים להוסיף כלי חדש? פשוט תבקשו מקלוד.</p>
 
     <p class="count he" id="count"></p>
     <div id="groups"></div>
@@ -339,65 +339,65 @@ header p{
   </div>
 
   <div class="view" id="view-trending">
-    <p class="trend-note he">חמישה דברים שצצו או צברו תאוצה אמיתית באקוסיסטם של Claude Code בחודש האחרון — מבוסס על מספרי התקנות, סיקור השקות, והדיירקטוריז שהקהילה בפועל משתמשת בהם.</p>
+    <p class="trend-note he">חמישה כלים חדשים ופופולריים שיצאו בעולם של קלוד בחודש האחרון.</p>
     <div class="trend-list" id="trendList"></div>
-    <p class="trend-sources he">נאסף בתאריך 2026-09-08. מקורות: מרשם skills.sh / Skillselion, השוק הרשמי anthropics/claude-plugins-official, agentplugins/agent-plugins-spec, ואוסף awesome-agent-skills של VoltAgent — כדאי לבדוק מחדש מדי פעם, הרשימה הזו מתיישנת.</p>
+    <p class="trend-sources he">עודכן לאחרונה: 8.9.2026. הרשימה הזו מתיישנת עם הזמן, כדאי לבדוק שוב מדי פעם.</p>
   </div>
 </div>
 
 <script>
 const skills = [
-  { name: "brainstorming", description: "חובה להשתמש בזה לפני כל עבודה יצירתית — יצירת פיצ'רים, בניית קומפוננטות, הוספת פונקציונליות או שינוי התנהגות.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "dispatching-parallel-agents", description: "שימוש כאשר יש 2 משימות עצמאיות או יותר שאפשר לבצע בלי מצב משותף או תלות רציפה ביניהן.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "executing-plans", description: "שימוש כשיש תוכנית יישום כתובה להרצה בסשן נפרד עם נקודות בקרה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "finishing-a-development-branch", description: "שימוש כשהיישום הושלם, כל הבדיקות עוברות, וצריך להחליט איך לשלב את העבודה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "receiving-code-review", description: "שימוש בקבלת משוב על code review, לפני יישום ההצעות — במיוחד אם הן לא ברורות או מוטלות בספק.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "requesting-code-review", description: "שימוש בסיום משימות, יישום פיצ'רים משמעותיים, או לפני מיזוג — כדי לוודא שהעבודה עומדת בדרישות.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "subagent-driven-development", description: "שימוש בהרצת תוכניות יישום עם משימות עצמאיות באותו הסשן.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "systematic-debugging", description: "שימוש כשנתקלים בבאג, כישלון בדיקה, או התנהגות לא צפויה — לפני הצעת תיקון.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "test-driven-development", description: "שימוש בכתיבת כל פיצ'ר או תיקון באג — לפני כתיבת קוד היישום.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "using-git-worktrees", description: "שימוש כשמתחילים עבודה על פיצ'ר שדורש בידוד מהסביבה הנוכחית, או לפני הרצת תוכניות יישום.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "using-superpowers", description: "שימוש בתחילת כל שיחה — קובע איך למצוא ולהשתמש בסקילים.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "verification-before-completion", description: "שימוש לפני שמכריזים שהעבודה הושלמה, תוקנה או עוברת — לפני קומיט או יצירת PR.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "writing-plans", description: "שימוש כשיש ספק או דרישות למשימה רב-שלבית — לפני נגיעה בקוד.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "writing-skills", description: "שימוש ביצירת סקילים חדשים, עריכת קיימים, או בדיקה שהם עובדים לפני פריסה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
-  { name: "ponytail", description: "כופה את הפתרון העצלן ביותר שבאמת עובד — הכי פשוט, הכי קצר, הכי מינימלי. משמעת קידוד לפי YAGNI ועדיפות ל-stdlib.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-audit", description: "ביקורת על כל הריפו לאיתור over-engineering — רשימה מדורגת של מה למחוק, לפשט, או להחליף ב-stdlib.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-debt", description: "אוסף כל הערת `ponytail:` בקוד לתוך רשימת חובות של קיצורי דרך מכוונים.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-gain", description: "מציג את האפקט הנמדד של ponytail בלוח תוצאות קומפקטי: פחות קוד, פחות עלות, יותר מהירות.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-help", description: "כרטיס עזר מהיר לכל המצבים, הסקילים והפקודות של ponytail.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
-  { name: "ponytail-review", description: "ביקורת קוד שמתמקדת אך ורק ב-over-engineering — מה למחוק, לא באגים לוגיים.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" }
+  { name: "brainstorming", description: "עוזר לחשוב טוב על רעיון לפני שמתחילים לבנות אותו, כדי לא לבזבז זמן על כיוון לא נכון.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "dispatching-parallel-agents", description: "כשיש כמה משימות נפרדות, זה עוזר לעשות אותן ביחד במקום אחת אחרי השנייה, וכך זה יוצא מהר יותר.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "executing-plans", description: "מריץ תוכנית עבודה מוכנה שלב אחר שלב, ועוצר בדרך לבדוק שהכול הולך נכון.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "finishing-a-development-branch", description: "עוזר להחליט מה עושים עם עבודה שהסתיימה, כדי לשלב אותה נכון עם השאר.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "receiving-code-review", description: "עוזר להתייחס נכון להערות ותיקונים שקיבלו, במקום סתם לקבל הכול כמו שהוא.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "requesting-code-review", description: "בודק שהעבודה שהסתיימה באמת מוכנה ותקינה, לפני שממשיכים הלאה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "subagent-driven-development", description: "מפצל עבודה גדולה לחתיכות קטנות ומריץ אותן זו לצד זו, כדי לחסוך זמן.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "systematic-debugging", description: "כשמשהו לא עובד כמו שצריך, זה עוזר למצוא מה באמת גורם לבעיה, במקום לנחש.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "test-driven-development", description: "לפני שבונים פתרון, קודם קובעים איך יבדקו שהוא עובד כמו שצריך.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "using-git-worktrees", description: "מאפשר להתחיל לעבוד על משהו חדש בלי לגעת או לבלבל את מה שכבר קיים ועובד.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "using-superpowers", description: "מסביר לקלוד איך למצוא ולהשתמש בשאר הכלים שברשימה הזו.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "verification-before-completion", description: "בודק שהעבודה באמת מוכנה ועובדת, לפני שמכריזים שהיא הסתיימה.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "writing-plans", description: "עוזר לבנות תוכנית סדורה למשימה גדולה, לפני שמתחילים לבצע אותה בפועל.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "writing-skills", description: "עוזר לבנות, לערוך ולבדוק כלים חדשים לקלוד, כמו הכלים שברשימה הזו.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "ponytail", description: "דואג שהפתרון יהיה הכי פשוט וקצר שבאמת עובד, בלי סיבוכים מיותרים.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-audit", description: "עובר על עבודה קיימת ומוצא דברים שנעשו מסובכים מדי, שאפשר לפשט או למחוק.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-debt", description: "שומר רשימה של כל הפשרות שנעשו בכוונה כדי לחסוך זמן, כדי לזכור לחזור אליהן בהמשך.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-gain", description: "מראה כמה זמן וכסף נחסכו הודות לפתרונות הפשוטים יותר.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-help", description: "דף עזר מהיר שמסביר מה הכלי הזה יודע לעשות.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-review", description: "בודק עבודה קיימת ומחפש רק דברים מסובכים מדי, לא טעויות.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" }
 ];
 
 const TRENDING = [
   {
     name: "Agent Plugins 1.0.0",
-    forWhom: "למפתחי תוספים ולצוותי פלטפורמה",
-    description: "תקן פתוח חדש (יצא ב-6 באוגוסט 2026) מבית Vercel, AWS, Cursor, Microsoft, OpenAI ו-Google, לאריזת סקיל יחד עם שרתי ה-MCP שלו בתיקייה אחת שרצה בלי שינוי על פני Claude Code, Cursor, Codex ו-Copilot.",
+    forWhom: "למי שבונה כלים משלו לקלוד",
+    description: "חברות גדולות (כולל Vercel, מיקרוסופט ו-OpenAI) הסכימו על צורה אחידה לבנות תוספים, כדי שאותו תוסף יעבוד בכל הכלים בלי לבנות אותו כמה פעמים.",
     link: "https://github.com/agentplugins/agent-plugins-spec"
   },
   {
     name: "find-skills",
-    forWhom: "למי שנמאס לו להמציא סקיל מחדש",
-    description: "הסקיל המותקן ביותר באקוסיסטם (מעל 3 מיליון התקנות). מלמד את קלוד לחפש במרשם הפתוח skills.sh באמצע משימה ולהציע חבילות מדורגות ומאומתות, במקום לכתוב הכול מאפס.",
+    forWhom: "לכולם — חוסך זמן",
+    description: "הכלי הכי פופולרי כרגע. הוא עוזר לקלוד לחפש כלי מוכן שכבר קיים, במקום להמציא פתרון חדש כל פעם מאפס.",
     link: "https://github.com/vercel-labs/skills"
   },
   {
     name: "pr-review-toolkit",
-    forWhom: "לצוותי הנדסה / סטודיו",
-    description: "תוסף רשמי של Anthropic שמוסיף סוכני בדיקת PR מיוחדים בשישה ממדים — בדיקות, כשלים שקטים, הערות, טייפים, איכות, אבטחה — במקום מעבר ביקורת גנרי אחד.",
+    forWhom: "לצוותי פיתוח",
+    description: "כלי רשמי שבודק עבודה לפני שמסיימים אותה, מכל כיוון אפשרי — כדי לתפוס בעיות מוקדם.",
     link: "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit"
   },
   {
     name: "awesome-agent-skills",
-    forWhom: "לגלישה לפני בנייה מאפס",
-    description: "אוסף מתוחזק ומעודכן של יותר מ-1000 סקילים מצוותים רשמיים ומהקהילה, תואם ל-Claude Code, Cursor, Codex ו-Gemini CLI — שווה לחפש בו לפני שכותבים סקיל חדש.",
+    forWhom: "למי שמחפש כלי מוכן",
+    description: "אוסף ענק של אלפי כלים מוכנים לשימוש. שווה לחפש שם לפני שמבקשים לבנות משהו חדש מאפס.",
     link: "https://github.com/VoltAgent/awesome-agent-skills"
   },
   {
     name: "claude-skills (380+ bundle)",
-    forWhom: "לתפקידים לא-הנדסיים (CSM, שיווק, אופס)",
-    description: "מעל 380 סקילים, סוכנים ופקודות שמכסים הנדסה, שיווק, מוצר, ציות, מחקר ותפעול עסקי — שימושי אם רוצים סקילים מוכנים מעבר לעבודת פיתוח טהורה.",
+    forWhom: "לתפקידים לא-טכניים (שיווק, שירות לקוחות, תפעול)",
+    description: "אוסף גדול של כלים שלא קשורים לפיתוח תוכנה — שימושי למי שרוצה עזרה בתחומים אחרים.",
     link: "https://github.com/alirezarezvani/claude-skills"
   }
 ];
