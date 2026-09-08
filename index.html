@@ -1,0 +1,482 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Skill Shelf</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+:root{
+  --bg:#EEF0EC;
+  --surface:#FFFFFF;
+  --ink:#1B211E;
+  --muted:#5B655F;
+  --accent:#2F6F5E;
+  --accent2:#C97A3A;
+  --accent-ink:#FFFFFF;
+  --border:#D8DED9;
+  --danger:#B3492F;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#141815;
+    --surface:#1D2320;
+    --ink:#E7ECE8;
+    --muted:#97A39C;
+    --accent:#56B79A;
+    --accent2:#E0995C;
+    --accent-ink:#0E1512;
+    --border:#2A322D;
+    --danger:#E08165;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#141815;
+  --surface:#1D2320;
+  --ink:#E7ECE8;
+  --muted:#97A39C;
+  --accent:#56B79A;
+  --accent2:#E0995C;
+  --accent-ink:#0E1512;
+  --border:#2A322D;
+  --danger:#E08165;
+}
+
+*{box-sizing:border-box;}
+@keyframes riseIn{
+  from{opacity:0;transform:translateY(10px);}
+  to{opacity:1;transform:translateY(0);}
+}
+@keyframes drawLine{
+  from{width:0;}
+  to{width:2.75rem;}
+}
+@media (prefers-reduced-motion: reduce){
+  *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;}
+}
+
+body{
+  background:
+    radial-gradient(720px 360px at 88% -8%, color-mix(in srgb, var(--accent) 14%, transparent), transparent),
+    radial-gradient(600px 320px at -6% 12%, color-mix(in srgb, var(--accent2) 10%, transparent), transparent),
+    var(--bg);
+  color:var(--ink);
+  font-family:'IBM Plex Sans',system-ui,sans-serif;
+  padding:2.5rem 1.5rem 5rem;
+  margin:0;
+}
+.wrap{max-width:920px;margin:0 auto;}
+
+header{animation:riseIn 0.5s ease-out both;}
+header h1{
+  font-family:'Fraunces',Georgia,serif;
+  font-optical-sizing:auto;
+  font-weight:600;
+  font-size:2.4rem;
+  letter-spacing:-0.01em;
+  text-wrap:balance;
+  margin:0 0 0.5rem;
+}
+header .rule{
+  height:3px;
+  width:2.75rem;
+  border-radius:2px;
+  background:linear-gradient(90deg,var(--accent),var(--accent2));
+  margin:0 0 0.85rem;
+  animation:drawLine 0.7s 0.15s cubic-bezier(.4,0,.2,1) both;
+}
+header p{
+  color:var(--muted);
+  font-size:0.95rem;
+  max-width:60ch;
+  margin:0 0 2rem;
+}
+
+/* controls */
+.controls{
+  display:flex;
+  gap:0.6rem;
+  margin-bottom:1.5rem;
+  animation:riseIn 0.5s 0.05s ease-out both;
+}
+.controls button{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.8rem;
+  padding:0.35rem 0.75rem;
+  border-radius:999px;
+  border:1px solid var(--border);
+  background:var(--surface);
+  color:var(--muted);
+  cursor:pointer;
+  transition:border-color 0.15s,color 0.15s,transform 0.15s;
+}
+.controls button:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);}
+.controls button:active{transform:translateY(0);}
+
+/* cards */
+.count{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.8rem;
+  color:var(--muted);
+  margin:0 0 0.75rem;
+}
+
+/* groups */
+.group{
+  margin-bottom:0.9rem;
+  border:1px solid var(--border);
+  border-radius:10px;
+  background:var(--surface);
+  overflow:hidden;
+  animation:riseIn 0.45s ease-out both;
+}
+.group summary{
+  cursor:pointer;
+  list-style:none;
+  display:flex;
+  align-items:baseline;
+  justify-content:space-between;
+  gap:0.75rem;
+  padding:0.9rem 1.1rem;
+  transition:background 0.15s;
+}
+.group summary:hover{background:color-mix(in srgb, var(--accent) 6%, var(--surface));}
+.group summary::-webkit-details-marker{display:none;}
+.group summary .gname{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:1.2rem;
+}
+.group summary .gname::after{
+  content:"▸";
+  display:inline-block;
+  margin-left:0.5rem;
+  font-size:0.75rem;
+  color:var(--accent);
+  transition:transform 0.2s;
+}
+.group[open] summary .gname::after{transform:rotate(90deg);}
+.group summary .gsource{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;
+  color:var(--muted);
+  text-align:right;
+  white-space:nowrap;
+}
+.grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
+  gap:0.9rem;
+  padding:0 1.1rem 1.1rem;
+}
+.card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:1rem 1.1rem;
+  display:flex;
+  flex-direction:column;
+  gap:0.5rem;
+  transition:transform 0.18s ease-out,box-shadow 0.18s ease-out,border-color 0.18s ease-out;
+  animation:riseIn 0.4s ease-out both;
+}
+.card:hover{
+  transform:translateY(-3px);
+  border-color:var(--accent);
+  box-shadow:0 10px 24px -16px color-mix(in srgb, var(--accent) 55%, transparent);
+}
+.card h3{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:1.08rem;
+  margin:0;
+  text-wrap:balance;
+}
+.card p{
+  margin:0;
+  font-size:0.86rem;
+  color:var(--muted);
+  line-height:1.4;
+}
+.card a.src{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;
+  color:var(--accent);
+  text-decoration:none;
+  word-break:break-all;
+}
+.card a.src:hover{text-decoration:underline;}
+.empty{
+  color:var(--muted);
+  font-size:0.9rem;
+  padding:2rem 0;
+  text-align:center;
+}
+
+/* tabs */
+.tabs{
+  display:flex;
+  gap:0.4rem;
+  margin-bottom:1.5rem;
+  border-bottom:1px solid var(--border);
+  animation:riseIn 0.5s ease-out both;
+}
+.tab{
+  font-family:'IBM Plex Sans',sans-serif;
+  font-weight:600;
+  font-size:0.92rem;
+  background:none;
+  border:none;
+  color:var(--muted);
+  padding:0.6rem 0.2rem;
+  margin-bottom:-1px;
+  border-bottom:2px solid transparent;
+  cursor:pointer;
+  transition:color 0.15s,border-color 0.15s;
+}
+.tab + .tab{margin-left:1.1rem;}
+.tab:hover{color:var(--ink);}
+.tab.active{color:var(--accent);border-color:var(--accent);}
+.view{display:none;}
+.view.active{display:block;}
+
+/* trending */
+.trend-note{
+  color:var(--muted);
+  font-size:0.88rem;
+  max-width:64ch;
+  margin:0 0 1.4rem;
+}
+.trend-list{display:flex;flex-direction:column;gap:0.75rem;}
+.trend-card{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:1rem 1.2rem;
+  display:grid;
+  grid-template-columns:2rem 1fr;
+  gap:0.9rem;
+  align-items:start;
+  transition:transform 0.18s ease-out,box-shadow 0.18s ease-out,border-color 0.18s ease-out;
+  animation:riseIn 0.4s ease-out both;
+}
+.trend-card:hover{
+  transform:translateY(-3px);
+  border-color:var(--accent2);
+  box-shadow:0 10px 24px -16px color-mix(in srgb, var(--accent2) 55%, transparent);
+}
+.trend-card > div{display:flex;flex-direction:column;gap:0.15rem;}
+.trend-rank{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:700;
+  font-size:1.6rem;
+  color:var(--accent2);
+  line-height:1;
+}
+.trend-card h3{
+  font-family:'Fraunces',Georgia,serif;
+  font-weight:600;
+  font-size:1.08rem;
+  margin:0;
+}
+.trend-card .trend-for{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.74rem;
+  color:var(--accent2);
+  text-transform:uppercase;
+  letter-spacing:0.03em;
+}
+.trend-card p{
+  margin:0.15rem 0 0;
+  font-size:0.86rem;
+  color:var(--muted);
+  line-height:1.4;
+}
+.trend-card a.src{
+  font-family:'IBM Plex Mono',monospace;
+  font-size:0.78rem;
+  color:var(--accent);
+  text-decoration:none;
+  word-break:break-all;
+}
+.trend-card a.src:hover{text-decoration:underline;}
+.trend-sources{
+  margin-top:1.2rem;
+  font-size:0.78rem;
+  color:var(--muted);
+  font-family:'IBM Plex Mono',monospace;
+}
+.trend-sources a{color:var(--muted);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <h1>Skill Shelf</h1>
+    <div class="rule"></div>
+    <p>Skills and plugins installed on top of stock Claude — grouped by the plugin they came with, so you can see everything a plugin adds at once.</p>
+  </header>
+
+  <div class="tabs">
+    <button type="button" class="tab active" data-view="shelf">Skill Shelf</button>
+    <button type="button" class="tab" data-view="trending">Trending — last 30 days</button>
+  </div>
+
+  <div class="view active" id="view-shelf">
+    <div class="controls">
+      <button type="button" id="expandAll">Expand all</button>
+      <button type="button" id="collapseAll">Collapse all</button>
+    </div>
+
+    <p class="trend-note">This list is maintained by hand — to add or update a skill, edit index.html in this repo (or ask Claude to do it and push the change).</p>
+
+    <p class="count" id="count"></p>
+    <div id="groups"></div>
+    <p class="empty" id="empty" hidden>Nothing here yet.</p>
+  </div>
+
+  <div class="view" id="view-trending">
+    <p class="trend-note">Five things that showed up or picked up real traction across the Claude Code ecosystem in the past month — pulled from marketplace install counts, launch coverage, and the community directories teams actually use to find this stuff.</p>
+    <div class="trend-list" id="trendList"></div>
+    <p class="trend-sources">Curated 2026-09-08. Sources: skills.sh / Skillselion registry, the official anthropics/claude-plugins-official marketplace, agentplugins/agent-plugins-spec, and VoltAgent's awesome-agent-skills — re-check periodically, this list ages.</p>
+  </div>
+</div>
+
+<script>
+const skills = [
+  { name: "brainstorming", description: "You MUST use this before any creative work - creating features, building components, adding functionality, or modifying behavior.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "dispatching-parallel-agents", description: "Use when facing 2+ independent tasks that can be worked on without shared state or sequential dependencies.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "executing-plans", description: "Use when you have a written implementation plan to execute in a separate session with review checkpoints.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "finishing-a-development-branch", description: "Use when implementation is complete, all tests pass, and you need to decide how to integrate the work.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "receiving-code-review", description: "Use when receiving code review feedback, before implementing suggestions, especially if it seems unclear or questionable.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "requesting-code-review", description: "Use when completing tasks, implementing major features, or before merging to verify work meets requirements.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "subagent-driven-development", description: "Use when executing implementation plans with independent tasks in the current session.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "systematic-debugging", description: "Use when encountering any bug, test failure, or unexpected behavior, before proposing fixes.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "test-driven-development", description: "Use when implementing any feature or bugfix, before writing implementation code.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "using-git-worktrees", description: "Use when starting feature work that needs isolation from the current workspace or before executing implementation plans.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "using-superpowers", description: "Use when starting any conversation - establishes how to find and use skills.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "verification-before-completion", description: "Use when about to claim work is complete, fixed, or passing, before committing or creating PRs.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "writing-plans", description: "Use when you have a spec or requirements for a multi-step task, before touching code.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "writing-skills", description: "Use when creating new skills, editing existing skills, or verifying skills work before deployment.", group: "Superpowers", link: "https://github.com/obra/superpowers-marketplace" },
+  { name: "ponytail", description: "Forces the laziest solution that actually works - simplest, shortest, most minimal. YAGNI, stdlib-first coding discipline.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-audit", description: "Whole-repo audit for over-engineering - a ranked list of what to delete, simplify, or replace with stdlib.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-debt", description: "Harvest every `ponytail:` comment in the codebase into a debt ledger of deliberate shortcuts.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-gain", description: "Shows ponytail's measured impact as a compact scoreboard: less code, less cost, more speed.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-help", description: "Quick-reference card for all ponytail modes, skills, and commands.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" },
+  { name: "ponytail-review", description: "Code review focused exclusively on over-engineering - what to delete, not correctness bugs.", group: "Ponytail", link: "https://github.com/DietrichGebert/ponytail" }
+];
+
+const TRENDING = [
+  {
+    name: "Agent Plugins 1.0.0",
+    forWhom: "Plugin authors & platform teams",
+    description: "New open standard (shipped Aug 6, 2026) from Vercel, AWS, Cursor, Microsoft, OpenAI and Google for packaging a Skill + its MCP servers into one folder that runs unmodified across Claude Code, Cursor, Codex and Copilot.",
+    link: "https://github.com/agentplugins/agent-plugins-spec"
+  },
+  {
+    name: "find-skills",
+    forWhom: "Anyone tired of reinventing a skill",
+    description: "The most-installed skill in the ecosystem (3M+ installs). Teaches Claude to search the open skills.sh registry mid-task and suggest vetted, ranked packages instead of writing one from scratch.",
+    link: "https://github.com/vercel-labs/skills"
+  },
+  {
+    name: "pr-review-toolkit",
+    forWhom: "Engineering / studio teams",
+    description: "Official Anthropic plugin adding specialized PR review agents across six dimensions — tests, silent failures, comments, types, quality, security — instead of one generic reviewer pass.",
+    link: "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit"
+  },
+  {
+    name: "awesome-agent-skills",
+    forWhom: "Browsing before building",
+    description: "A curated, actively-updated collection of 1000+ agent skills from official teams and the community, cross-compatible with Claude Code, Cursor, Codex and Gemini CLI — worth a search before writing a new skill.",
+    link: "https://github.com/VoltAgent/awesome-agent-skills"
+  },
+  {
+    name: "claude-skills (380+ bundle)",
+    forWhom: "Non-engineering roles (CSM, marketing, ops)",
+    description: "380+ skills, agents and commands spanning engineering, marketing, product, compliance, research and business ops — useful if you want ready-made skills outside pure dev workflows.",
+    link: "https://github.com/alirezarezvani/claude-skills"
+  }
+];
+
+function escapeHtml(s){
+  return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+}
+
+function groupBy(list){
+  const groups = {};
+  list.forEach(s => {
+    const g = s.group || 'Ungrouped';
+    (groups[g] = groups[g] || []).push(s);
+  });
+  return groups;
+}
+
+function render(){
+  const wrap = document.getElementById('groups');
+  const empty = document.getElementById('empty');
+  const count = document.getElementById('count');
+  const groups = groupBy(skills);
+  const names = Object.keys(groups).sort((a,b) => a.localeCompare(b));
+
+  count.textContent = `${skills.length} skill${skills.length===1?'':'s'} across ${names.length} plugin${names.length===1?'':'s'}`;
+  empty.hidden = skills.length !== 0;
+
+  wrap.innerHTML = names.map((name, gi) => {
+    const items = groups[name].slice().sort((a,b) => (a.name||'').localeCompare(b.name||''));
+    const source = items[0] && items[0].link ? items[0].link : '';
+    return `
+    <details class="group" open style="animation-delay:${Math.min(gi*70,350)}ms">
+      <summary>
+        <span class="gname">${escapeHtml(name)} <span style="font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:0.8rem;color:var(--muted);">${items.length} skill${items.length===1?'':'s'}</span></span>
+        <span class="gsource">${escapeHtml(source)}</span>
+      </summary>
+      <div class="grid">
+        ${items.map((s, ci) => `
+          <div class="card" style="animation-delay:${Math.min(ci*45,300)}ms">
+            <h3>${escapeHtml(s.name)}</h3>
+            <p>${escapeHtml(s.description)}</p>
+            <a class="src" href="${escapeHtml(s.link)}" target="_blank" rel="noopener">${escapeHtml(s.link)}</a>
+          </div>
+        `).join('')}
+      </div>
+    </details>`;
+  }).join('');
+}
+
+document.getElementById('expandAll').addEventListener('click', () => {
+  document.querySelectorAll('.group').forEach(d => d.open = true);
+});
+document.getElementById('collapseAll').addEventListener('click', () => {
+  document.querySelectorAll('.group').forEach(d => d.open = false);
+});
+
+function renderTrending(){
+  document.getElementById('trendList').innerHTML = TRENDING.map((t, i) => `
+    <div class="trend-card" style="animation-delay:${i*60}ms">
+      <span class="trend-rank">${i+1}</span>
+      <div>
+        <h3>${escapeHtml(t.name)}</h3>
+        <div class="trend-for">${escapeHtml(t.forWhom)}</div>
+        <p>${escapeHtml(t.description)}</p>
+        <a class="src" href="${escapeHtml(t.link)}" target="_blank" rel="noopener">${escapeHtml(t.link)}</a>
+      </div>
+    </div>
+  `).join('');
+}
+
+document.querySelectorAll('.tab').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-' + btn.dataset.view).classList.add('active');
+  });
+});
+
+renderTrending();
+render();
+</script>
+</body>
+</html>
