@@ -258,6 +258,22 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
   font-family:Heebo;font-size:13px;color:var(--text-2);background:var(--bg);
   border-radius:8px;padding:10px 12px;line-height:1.6;
 }
+.help-block{
+  background:linear-gradient(135deg, color-mix(in srgb, var(--accent) 10%, var(--surface)), var(--surface));
+  border:1px solid var(--accent);border-radius:10px;padding:16px;
+  display:flex;flex-direction:column;gap:10px;
+}
+.help-block .help-title{
+  display:flex;align-items:center;gap:8px;
+  font-family:Heebo;font-weight:700;font-size:15px;color:var(--text);
+}
+.help-block .help-title i{color:var(--accent);font-size:19px;}
+.help-block p{font-family:Heebo;font-size:13px;color:var(--text-2);margin:0;line-height:1.6;}
+.divider-label{
+  display:flex;align-items:center;gap:10px;
+  font-family:Heebo;font-size:12px;color:var(--text-2);
+}
+.divider-label::before, .divider-label::after{content:"";flex:1;height:1px;background:var(--border);}
 .field{display:flex;flex-direction:column;gap:6px;}
 .field label{font-family:Heebo;font-weight:600;font-size:13px;color:var(--text);}
 .field input, .field select{
@@ -700,15 +716,35 @@ const installTitle = document.getElementById('installTitle');
 const installBody = document.getElementById('installBody');
 const installRepoLink = document.getElementById('installRepoLink');
 
+function buildHelpPrompt(groupName, info, fallbackLink){
+  if (info){
+    return `אני מנסה להתקין את החבילה "${groupName}" בקלוד קוד שלי, ואני לא בטוח/ה שזה עבד או שנתקעתי באמצע. אלו הפקודות שאני אמור/ה להריץ:\n${info.steps.map((s,i)=>`${i+1}. ${s}`).join('\n')}\n\nתבדוק/י בשבילי מה קיים ומה חסר אצלי, תסביר/י לי בשפה פשוטה מה קורה, ותדריך/י אותי צעד אחר צעד עד שזה יעבוד — ואם אפשר, תעשה/י כמה שיותר מהתהליך בעצמך במקומי.`;
+  }
+  return `אני מנסה להתקין כלי מהריפו הזה: ${fallbackLink} ואני לא בטוח/ה איך עושים את זה או שנתקעתי באמצע. תבדוק/י בשבילי מה קיים ומה חסר אצלי, תסביר/י לי בשפה פשוטה מה קורה, ותדריך/י אותי צעד אחר צעד עד שזה יעבוד — ואם אפשר, תעשה/י כמה שיותר מהתהליך בעצמך במקומי.`;
+}
+
 function openInstallModal(groupName, fallbackLink){
   const info = INSTALL_INFO[groupName];
   installTitle.textContent = `התקנת ${groupName}`;
   installRepoLink.href = fallbackLink;
 
+  const helpPrompt = buildHelpPrompt(groupName, info, fallbackLink);
+  const helpBlockHtml = `
+    <div class="help-block">
+      <div class="help-title"><i class="ph ph-lifebuoy"></i>נתקעתם? הכי קל — תנו לקלוד להדריך אתכם</div>
+      <p>העתיקו את ההודעה הבאה והדביקו אותה בשיחה עם קלוד שלכם. הוא יבדוק מה חסר, יסביר בשפה פשוטה, וילווה אתכם צעד אחר צעד — ואפילו יעשה חלק מהעבודה בעצמו.</p>
+      <div class="install-cmd">
+        <code dir="rtl" style="white-space:pre-wrap;">${escapeHtml(helpPrompt)}</code>
+        <button type="button" class="copy-btn" data-copy="${escapeHtml(helpPrompt)}" style="align-self:flex-start;">העתקה</button>
+      </div>
+    </div>
+  `;
+
+  let stepsHtml = '';
   if (!info){
-    installBody.innerHTML = `<p style="font-family:Heebo;font-size:14px;color:var(--text-2);margin:0;">אין לנו הוראות התקנה מובנות לחבילה הזו עדיין — לחצו למטה כדי לראות אותן ב-GitHub.</p>`;
+    stepsHtml = `<p style="font-family:Heebo;font-size:14px;color:var(--text-2);margin:0;">אין לנו הוראות התקנה מובנות לחבילה הזו עדיין — לחצו למטה כדי לראות אותן ב-GitHub, או פשוט השתמשו בעזרה של קלוד למעלה.</p>`;
   } else {
-    installBody.innerHTML = info.steps.map((step, i) => `
+    stepsHtml = `<div class="divider-label">או, אם אתם רוצים לעשות את זה בעצמכם</div>` + info.steps.map((step, i) => `
       <div class="install-step">
         <div class="step-label">שלב ${i + 1}${info.steps.length > 1 ? ' (הריצו כפרומפט נפרד)' : ''}</div>
         <div class="install-cmd">
@@ -717,18 +753,20 @@ function openInstallModal(groupName, fallbackLink){
         </div>
       </div>
     `).join('') + (info.note ? `<div class="install-note">${escapeHtml(info.note)}</div>` : '');
-
-    installBody.querySelectorAll('[data-copy]').forEach(btn => {
-      btn.addEventListener('click', async () => {
-        try {
-          await navigator.clipboard.writeText(btn.dataset.copy);
-          const original = btn.textContent;
-          btn.textContent = 'הועתק!';
-          setTimeout(() => { btn.textContent = original; }, 1500);
-        } catch (e) {}
-      });
-    });
   }
+
+  installBody.innerHTML = helpBlockHtml + stepsHtml;
+
+  installBody.querySelectorAll('[data-copy]').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy);
+        const original = btn.textContent;
+        btn.textContent = 'הועתק!';
+        setTimeout(() => { btn.textContent = original; }, 1500);
+      } catch (e) {}
+    });
+  });
 
   installOverlay.hidden = false;
 }
