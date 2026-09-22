@@ -237,6 +237,27 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
   display:flex;flex-direction:column;gap:16px;max-height:90vh;overflow-y:auto;
 }
 .modal h2{font-family:Rubik,sans-serif;font-weight:700;font-size:19px;margin:0;color:var(--text);}
+.install-step{display:flex;flex-direction:column;gap:6px;}
+.install-step .step-label{font-family:Heebo;font-size:13px;color:var(--text-2);}
+.install-cmd{
+  display:flex;align-items:center;gap:8px;
+  background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;
+}
+.install-cmd code{
+  flex:1;min-width:0;font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--text);
+  overflow-x:auto;white-space:pre;direction:ltr;text-align:left;
+}
+.copy-btn{
+  flex-shrink:0;background:var(--surface);border:1px solid var(--border);border-radius:6px;
+  padding:6px 10px;cursor:pointer;color:var(--text-2);font-family:Heebo;font-size:12px;
+  transition:border-color .2s ease, color .2s ease;
+}
+.copy-btn:hover{border-color:var(--accent);color:var(--accent);}
+.copy-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.install-note{
+  font-family:Heebo;font-size:13px;color:var(--text-2);background:var(--bg);
+  border-radius:8px;padding:10px 12px;line-height:1.6;
+}
 .field{display:flex;flex-direction:column;gap:6px;}
 .field label{font-family:Heebo;font-weight:600;font-size:13px;color:var(--text);}
 .field input, .field select{
@@ -375,6 +396,20 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
     </div>
   </div>
 
+  <div class="modal-overlay" id="installOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="installTitle">
+      <h2 id="installTitle">התקנה</h2>
+      <div id="installBody" style="display:flex;flex-direction:column;gap:14px;"></div>
+      <div class="modal-actions">
+        <button type="button" class="btn-outline" id="closeInstall">סגירה</button>
+        <a class="btn-primary" id="installRepoLink" href="#" target="_blank" rel="noopener" style="text-decoration:none;">
+          <i class="ph ph-arrow-square-out"></i>
+          לצפייה ב-GitHub
+        </a>
+      </div>
+    </div>
+  </div>
+
 </div>
 
 <script type="module">
@@ -424,6 +459,23 @@ const TRENDING = [
   { name: "find-skills", forWhom: "לכולם — חוסך זמן", description: "עדיין הכלי הכי מותקן בעולם הזה. הוא עוזר לקלוד לחפש כלי מוכן שכבר קיים, במקום להמציא פתרון חדש כל פעם מאפס.", link: "https://github.com/vercel-labs/skills" }
 ];
 
+const INSTALL_INFO = {
+  "Superpowers": {
+    steps: [
+      "/plugin marketplace add obra/superpowers-marketplace",
+      "/plugin install superpowers@superpowers-marketplace"
+    ],
+    note: "שני השלבים חייבים להישלח כשני פרומפטים נפרדים בקלוד — לא באותה הודעה."
+  },
+  "Ponytail": {
+    steps: [
+      "/plugin marketplace add DietrichGebert/ponytail",
+      "/plugin install ponytail@ponytail"
+    ],
+    note: "שני השלבים חייבים להישלח כשני פרומפטים נפרדים בקלוד — לא באותה הודעה."
+  }
+};
+
 function escapeHtml(s){
   return (s||"").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
 }
@@ -468,10 +520,10 @@ function render(){
           </span>
           <i class="ph ph-caret-down gcaret"></i>
         </button>
-        <a class="group-install" href="${escapeHtml(items[0].link)}" target="_blank" rel="noopener" title="התקנת כל חבילת ${escapeHtml(name)}">
+        <button type="button" class="group-install" data-install="${escapeHtml(name)}" data-fallback-link="${escapeHtml(items[0].link)}" title="התקנת כל חבילת ${escapeHtml(name)}">
           <i class="ph ph-download-simple"></i>
           התקן הכל
-        </a>
+        </button>
       </div>
       ${isOpen ? `<div class="group-body">${items.map(s => `
         <a class="skill-row" href="${escapeHtml(s.link)}" target="_blank" rel="noopener">
@@ -490,6 +542,12 @@ function render(){
       const key = btn.dataset.toggle;
       if (collapsed.has(key)) collapsed.delete(key); else collapsed.add(key);
       render();
+    });
+  });
+
+  wrap.querySelectorAll('[data-install]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      openInstallModal(btn.dataset.install, btn.dataset.fallbackLink);
     });
   });
 
@@ -569,7 +627,12 @@ function closeModal(){
 document.getElementById('openAdd').addEventListener('click', openModal);
 document.getElementById('cancelAdd').addEventListener('click', closeModal);
 overlay.addEventListener('click', (e) => { if (e.target === overlay) closeModal(); });
-document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !overlay.hidden) closeModal(); });
+document.addEventListener('keydown', (e) => {
+  if (e.key !== 'Escape') return;
+  if (!overlay.hidden) closeModal();
+  if (!feedbackOverlay.hidden) feedbackOverlay.hidden = true;
+  if (!installOverlay.hidden) installOverlay.hidden = true;
+});
 
 groupSelect.addEventListener('change', () => {
   if (groupSelect.value === '__new__'){
@@ -630,6 +693,47 @@ async function loadSkills(){
   }
   render();
 }
+
+/* install modal */
+const installOverlay = document.getElementById('installOverlay');
+const installTitle = document.getElementById('installTitle');
+const installBody = document.getElementById('installBody');
+const installRepoLink = document.getElementById('installRepoLink');
+
+function openInstallModal(groupName, fallbackLink){
+  const info = INSTALL_INFO[groupName];
+  installTitle.textContent = `התקנת ${groupName}`;
+  installRepoLink.href = fallbackLink;
+
+  if (!info){
+    installBody.innerHTML = `<p style="font-family:Heebo;font-size:14px;color:var(--text-2);margin:0;">אין לנו הוראות התקנה מובנות לחבילה הזו עדיין — לחצו למטה כדי לראות אותן ב-GitHub.</p>`;
+  } else {
+    installBody.innerHTML = info.steps.map((step, i) => `
+      <div class="install-step">
+        <div class="step-label">שלב ${i + 1}${info.steps.length > 1 ? ' (הריצו כפרומפט נפרד)' : ''}</div>
+        <div class="install-cmd">
+          <code dir="ltr">${escapeHtml(step)}</code>
+          <button type="button" class="copy-btn" data-copy="${escapeHtml(step)}">העתקה</button>
+        </div>
+      </div>
+    `).join('') + (info.note ? `<div class="install-note">${escapeHtml(info.note)}</div>` : '');
+
+    installBody.querySelectorAll('[data-copy]').forEach(btn => {
+      btn.addEventListener('click', async () => {
+        try {
+          await navigator.clipboard.writeText(btn.dataset.copy);
+          const original = btn.textContent;
+          btn.textContent = 'הועתק!';
+          setTimeout(() => { btn.textContent = original; }, 1500);
+        } catch (e) {}
+      });
+    });
+  }
+
+  installOverlay.hidden = false;
+}
+document.getElementById('closeInstall').addEventListener('click', () => { installOverlay.hidden = true; });
+installOverlay.addEventListener('click', (e) => { if (e.target === installOverlay) installOverlay.hidden = true; });
 
 /* feedback */
 const feedbackOverlay = document.getElementById('feedbackOverlay');
