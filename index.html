@@ -8,6 +8,12 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700&family=Heebo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://unpkg.com/@phosphor-icons/web"></script>
+<script>
+  try {
+    const saved = localStorage.getItem('skillShelfTheme');
+    if (saved === 'light' || saved === 'dark') document.documentElement.setAttribute('data-theme', saved);
+  } catch (e) {}
+</script>
 <style>
 :root{
   --bg:#F7F8FA;
@@ -21,7 +27,7 @@
   --shadow-hover:0 8px 20px rgba(21,23,26,0.12), 0 2px 6px rgba(21,23,26,0.08);
 }
 @media (prefers-color-scheme: dark){
-  :root{
+  :root:not([data-theme="light"]){
     --bg:#121417;
     --surface:#1B1E23;
     --text:#F2F4F6;
@@ -32,6 +38,17 @@
     --shadow-resting:0 1px 2px rgba(79,193,191,0.08);
     --shadow-hover:0 8px 22px rgba(79,193,191,0.20), 0 2px 8px rgba(79,193,191,0.14);
   }
+}
+:root[data-theme="dark"]{
+  --bg:#121417;
+  --surface:#1B1E23;
+  --text:#F2F4F6;
+  --text-2:#9AA1AC;
+  --border:#2B2F36;
+  --accent:#4FC1BF;
+  --accent-2:#7FDAD8;
+  --shadow-resting:0 1px 2px rgba(79,193,191,0.08);
+  --shadow-hover:0 8px 22px rgba(79,193,191,0.20), 0 2px 8px rgba(79,193,191,0.14);
 }
 *{box-sizing:border-box;}
 [hidden]{display:none !important;}
@@ -237,6 +254,10 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
       <h1>מדף הכלים</h1>
       <p>רשימה של כלים נוספים שהתקנו על קלוד, כדי שיידע לעשות דברים שהוא לא יודע לעשות מהקופסה. מחולק לפי החבילה שכל כלי הגיע איתה.</p>
     </div>
+    <button type="button" class="icon-btn" id="themeToggle">
+      <i class="ph ph-moon" id="themeIcon"></i>
+      <span id="themeLabel">מצב לילה</span>
+    </button>
   </div>
 
   <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;">
@@ -565,6 +586,30 @@ async function loadSkills(){
   }
   render();
 }
+
+/* theme toggle */
+const themeToggle = document.getElementById('themeToggle');
+const themeIcon = document.getElementById('themeIcon');
+const themeLabel = document.getElementById('themeLabel');
+const prefersDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function currentTheme(){
+  const explicit = document.documentElement.getAttribute('data-theme');
+  if (explicit) return explicit;
+  return prefersDark.matches ? 'dark' : 'light';
+}
+function updateThemeButton(){
+  const isDark = currentTheme() === 'dark';
+  themeIcon.className = isDark ? 'ph ph-sun' : 'ph ph-moon';
+  themeLabel.textContent = isDark ? 'מצב יום' : 'מצב לילה';
+}
+themeToggle.addEventListener('click', () => {
+  const next = currentTheme() === 'dark' ? 'light' : 'dark';
+  document.documentElement.setAttribute('data-theme', next);
+  try { localStorage.setItem('skillShelfTheme', next); } catch (e) {}
+  updateThemeButton();
+});
+updateThemeButton();
 
 loadSkills();
 renderTrending();
