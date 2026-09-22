@@ -119,8 +119,9 @@ body{
   transition:box-shadow .2s ease;
 }
 .group[data-expanded="true"]{box-shadow:var(--shadow-hover);}
+.group-header-row{display:flex;align-items:center;gap:4px;padding-left:8px;}
 .group-header{
-  width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  flex:1;min-width:0;display:flex;align-items:center;justify-content:space-between;gap:12px;
   padding:13px 16px;background:transparent;border:none;cursor:pointer;text-align:right;
   min-height:44px;font-family:inherit;
   transition:background .2s ease;
@@ -136,6 +137,15 @@ body{
 }
 .group-header .gcaret{font-size:17px;color:var(--text-2);transition:transform .2s ease;}
 .group[data-expanded="true"] .gcaret{transform:rotate(180deg);}
+.group-install{
+  display:flex;align-items:center;gap:6px;flex-shrink:0;
+  font-family:Heebo;font-weight:600;font-size:12px;color:var(--accent);
+  background:var(--bg);border:1px solid var(--border);border-radius:999px;
+  padding:7px 12px;text-decoration:none;white-space:nowrap;min-height:36px;
+  transition:border-color .2s ease, box-shadow .2s ease, background .2s ease;
+}
+.group-install:hover{border-color:var(--accent);box-shadow:var(--shadow-hover);background:var(--surface);}
+.group-install:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
 .group-body{display:flex;flex-direction:column;gap:6px;padding:0 16px 12px;}
 
 .skill-row{
@@ -449,14 +459,20 @@ function render(){
     const isOpen = q ? true : !collapsed.has(name);
     return `
     <div class="group" data-group="${escapeHtml(name)}" data-expanded="${isOpen}">
-      <button class="group-header" data-toggle="${escapeHtml(name)}" aria-expanded="${isOpen}">
-        <span class="gleft">
-          <i class="ph ph-folder-simple gicon"></i>
-          <span class="gname" dir="ltr">${escapeHtml(name)}</span>
-          <span class="gcount">${items.length}</span>
-        </span>
-        <i class="ph ph-caret-down gcaret"></i>
-      </button>
+      <div class="group-header-row">
+        <button class="group-header" data-toggle="${escapeHtml(name)}" aria-expanded="${isOpen}">
+          <span class="gleft">
+            <i class="ph ph-folder-simple gicon"></i>
+            <span class="gname" dir="ltr">${escapeHtml(name)}</span>
+            <span class="gcount">${items.length}</span>
+          </span>
+          <i class="ph ph-caret-down gcaret"></i>
+        </button>
+        <a class="group-install" href="${escapeHtml(items[0].link)}" target="_blank" rel="noopener" title="התקנת כל חבילת ${escapeHtml(name)}">
+          <i class="ph ph-download-simple"></i>
+          התקן הכל
+        </a>
+      </div>
       ${isOpen ? `<div class="group-body">${items.map(s => `
         <a class="skill-row" href="${escapeHtml(s.link)}" target="_blank" rel="noopener">
           <span style="display:flex;flex-direction:column;gap:3px;">
