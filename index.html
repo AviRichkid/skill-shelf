@@ -334,8 +334,33 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
 
   <footer>
     <span class="fnote">מקור: מעודכן ידנית על ידי הצוות</span>
-    <a href="https://github.com/AviRichkid/skill-shelf" dir="ltr">GitHub Pages</a>
+    <div style="display:flex;align-items:center;gap:14px;">
+      <button type="button" class="fnote" id="openFeedback" style="background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;color:var(--text-2);font-family:Heebo;">
+        <i class="ph ph-chat-circle-text" style="vertical-align:-2px;"></i> משוב / רעיון
+      </button>
+      <a href="https://github.com/AviRichkid/skill-shelf" dir="ltr">GitHub Pages</a>
+    </div>
   </footer>
+
+  <div class="modal-overlay" id="feedbackOverlay" hidden>
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="feedbackTitle">
+      <h2 id="feedbackTitle">משוב או רעיון</h2>
+      <form id="feedbackForm" style="display:flex;flex-direction:column;gap:14px;">
+        <div class="field">
+          <label for="fb-message">מה תרצו לספר לנו?</label>
+          <textarea id="fb-message" required maxlength="1000" rows="5" placeholder="באג, רעיון, הצעה לשיפור..." style="background:var(--bg);border:1px solid var(--border);border-radius:8px;padding:10px 12px;font-family:Heebo;font-size:14px;color:var(--text);resize:vertical;"></textarea>
+        </div>
+        <div class="field">
+          <label for="fb-name">שם (לא חובה)</label>
+          <input id="fb-name" maxlength="60" placeholder="השם שלכם">
+        </div>
+        <div class="modal-actions">
+          <button type="button" class="btn-outline" id="cancelFeedback">ביטול</button>
+          <button type="submit" class="btn-primary">שליחה</button>
+        </div>
+      </form>
+    </div>
+  </div>
 
 </div>
 
@@ -586,6 +611,29 @@ async function loadSkills(){
   }
   render();
 }
+
+/* feedback */
+const feedbackOverlay = document.getElementById('feedbackOverlay');
+const feedbackForm = document.getElementById('feedbackForm');
+document.getElementById('openFeedback').addEventListener('click', () => {
+  feedbackOverlay.hidden = false;
+  document.getElementById('fb-message').focus();
+});
+document.getElementById('cancelFeedback').addEventListener('click', () => {
+  feedbackOverlay.hidden = true;
+  feedbackForm.reset();
+});
+feedbackOverlay.addEventListener('click', (e) => { if (e.target === feedbackOverlay) { feedbackOverlay.hidden = true; feedbackForm.reset(); } });
+feedbackForm.addEventListener('submit', (e) => {
+  e.preventDefault();
+  const message = document.getElementById('fb-message').value.trim();
+  const name = document.getElementById('fb-name').value.trim();
+  const subject = encodeURIComponent('משוב על Skill Shelf');
+  const body = encodeURIComponent((name ? `מאת: ${name}\n\n` : '') + message);
+  window.location.href = `mailto:avi@richkid.co.il?subject=${subject}&body=${body}`;
+  feedbackOverlay.hidden = true;
+  feedbackForm.reset();
+});
 
 /* theme toggle */
 const themeToggle = document.getElementById('themeToggle');
