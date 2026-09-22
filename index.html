@@ -1,348 +1,240 @@
 <!doctype html>
-<html lang="en">
+<html lang="he" dir="rtl">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <link rel="icon" href="favicon.svg">
 <title>Skill Shelf</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Rubik:wght@500;600;700&family=Heebo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<script src="https://unpkg.com/@phosphor-icons/web"></script>
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
-
 :root{
-  --bg:#EEF0EC;
+  --bg:#F7F8FA;
   --surface:#FFFFFF;
-  --ink:#1B211E;
-  --muted:#5B655F;
-  --accent:#2F6F5E;
-  --accent2:#C97A3A;
-  --accent-ink:#FFFFFF;
-  --border:#D8DED9;
-  --danger:#B3492F;
+  --text:#15171A;
+  --text-2:#565C66;
+  --border:#E1E4E9;
+  --accent:#0E7C7B;
+  --accent-2:#14A3A1;
+  --shadow-resting:0 1px 2px rgba(21,23,26,0.06);
+  --shadow-hover:0 8px 20px rgba(21,23,26,0.12), 0 2px 6px rgba(21,23,26,0.08);
 }
 @media (prefers-color-scheme: dark){
-  :root:not([data-theme="light"]){
-    --bg:#141815;
-    --surface:#1D2320;
-    --ink:#E7ECE8;
-    --muted:#97A39C;
-    --accent:#56B79A;
-    --accent2:#E0995C;
-    --accent-ink:#0E1512;
-    --border:#2A322D;
-    --danger:#E08165;
+  :root{
+    --bg:#121417;
+    --surface:#1B1E23;
+    --text:#F2F4F6;
+    --text-2:#9AA1AC;
+    --border:#2B2F36;
+    --accent:#4FC1BF;
+    --accent-2:#7FDAD8;
+    --shadow-resting:0 1px 2px rgba(79,193,191,0.08);
+    --shadow-hover:0 8px 22px rgba(79,193,191,0.20), 0 2px 8px rgba(79,193,191,0.14);
   }
 }
-:root[data-theme="dark"]{
-  --bg:#141815;
-  --surface:#1D2320;
-  --ink:#E7ECE8;
-  --muted:#97A39C;
-  --accent:#56B79A;
-  --accent2:#E0995C;
-  --accent-ink:#0E1512;
-  --border:#2A322D;
-  --danger:#E08165;
-}
-
 *{box-sizing:border-box;}
-.he{direction:rtl;text-align:right;unicode-bidi:isolate;}
-@keyframes riseIn{
-  from{opacity:0;transform:translateY(10px);}
-  to{opacity:1;transform:translateY(0);}
-}
-@keyframes drawLine{
-  from{width:0;}
-  to{width:2.75rem;}
-}
-@media (prefers-reduced-motion: reduce){
-  *{animation-duration:0.001ms !important;animation-iteration-count:1 !important;transition-duration:0.001ms !important;}
-}
+@media (prefers-reduced-motion: reduce){ *{transition:none !important; animation:none !important;} }
 
 body{
-  background:
-    radial-gradient(720px 360px at 88% -8%, color-mix(in srgb, var(--accent) 14%, transparent), transparent),
-    radial-gradient(600px 320px at -6% 12%, color-mix(in srgb, var(--accent2) 10%, transparent), transparent),
-    var(--bg);
-  color:var(--ink);
-  font-family:'IBM Plex Sans',system-ui,sans-serif;
-  padding:2.5rem 1.5rem 5rem;
   margin:0;
+  background:var(--bg);
+  color:var(--text);
+  font-family:Heebo,sans-serif;
 }
-.wrap{max-width:920px;margin:0 auto;}
+[dir="ltr"]{unicode-bidi:isolate;}
 
-header{animation:riseIn 0.5s ease-out both;}
-header h1{
-  font-family:'Fraunces',Georgia,serif;
-  font-optical-sizing:auto;
-  font-weight:600;
-  font-size:2.4rem;
-  letter-spacing:-0.01em;
-  text-wrap:balance;
-  margin:0 0 0.5rem;
-}
-header .rule{
-  height:3px;
-  width:2.75rem;
-  border-radius:2px;
-  background:linear-gradient(90deg,var(--accent),var(--accent2));
-  margin:0 0 0.85rem;
-  animation:drawLine 0.7s 0.15s cubic-bezier(.4,0,.2,1) both;
-}
-header p{
-  color:var(--muted);
-  font-size:0.95rem;
-  max-width:60ch;
-  margin:0 0 2rem;
-}
+.wrap{max-width:1040px;margin:0 auto;padding:40px 20px 96px;display:flex;flex-direction:column;gap:28px;}
 
-/* controls */
-.controls{
-  display:flex;
-  gap:0.6rem;
-  margin-bottom:1.5rem;
-  animation:riseIn 0.5s 0.05s ease-out both;
-}
-.controls button{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:0.8rem;
-  padding:0.35rem 0.75rem;
-  border-radius:999px;
-  border:1px solid var(--border);
-  background:var(--surface);
-  color:var(--muted);
-  cursor:pointer;
-  transition:border-color 0.15s,color 0.15s,transform 0.15s;
-}
-.controls button:hover{border-color:var(--accent);color:var(--accent);transform:translateY(-1px);}
-.controls button:active{transform:translateY(0);}
+/* header */
+.head-row{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;flex-wrap:wrap;}
+.head-text{display:flex;flex-direction:column;gap:8px;}
+.head-text h1{font-family:Rubik,sans-serif;font-weight:700;font-size:clamp(26px,4vw,34px);margin:0;color:var(--text);}
+.head-text p{font-family:Heebo;font-size:15px;color:var(--text-2);max-width:560px;margin:0;line-height:1.65;}
 
-/* cards */
-.count{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:0.8rem;
-  color:var(--muted);
-  margin:0 0 0.75rem;
+/* icon buttons */
+.icon-btn{
+  display:flex;align-items:center;gap:8px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:10px 16px;cursor:pointer;color:var(--text);
+  font-family:Heebo;font-size:13px;
+  min-height:44px;
+  box-shadow:var(--shadow-resting);
+  transition:box-shadow .2s ease, border-color .2s ease, transform .15s ease;
 }
+.icon-btn:hover{border-color:var(--accent);box-shadow:var(--shadow-hover);}
+.icon-btn:active{transform:scale(0.98);}
+.icon-btn:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+/* search */
+.search-field{
+  display:flex;align-items:center;gap:10px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:10px 14px;min-height:44px;
+  transition:border-color .2s ease, box-shadow .2s ease;
+}
+.search-field:focus-within{border-color:var(--accent);box-shadow:var(--shadow-hover);}
+.search-field i{font-size:16px;color:var(--text-2);flex-shrink:0;}
+.search-field input{
+  border:none;background:transparent;outline:none;width:100%;
+  font-family:Heebo;font-size:14px;color:var(--text);
+}
+.search-field input::placeholder{color:var(--text-2);}
+
+/* tabs */
+.tabs{display:flex;gap:6px;background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:4px;width:fit-content;}
+.tab{
+  font-family:Heebo;font-weight:600;font-size:13px;border:none;cursor:pointer;
+  padding:8px 16px;border-radius:6px;min-height:36px;color:var(--text-2);background:transparent;
+  transition:background .2s ease, color .2s ease, box-shadow .2s ease;
+}
+.tab.active{color:var(--bg);background:linear-gradient(135deg,var(--accent),var(--accent-2));box-shadow:var(--shadow-hover);}
+.tab:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+/* count */
+.count{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--text-2);}
 
 /* groups */
 .group{
-  margin-bottom:0.9rem;
-  border:1px solid var(--border);
-  border-radius:10px;
-  background:var(--surface);
-  overflow:hidden;
-  animation:riseIn 0.45s ease-out both;
+  border:1px solid var(--border);border-radius:8px;overflow:hidden;background:var(--surface);
+  box-shadow:var(--shadow-resting);
+  transition:box-shadow .2s ease;
 }
-.group summary{
-  cursor:pointer;
-  list-style:none;
-  display:flex;
-  align-items:baseline;
-  justify-content:space-between;
-  gap:0.75rem;
-  padding:0.9rem 1.1rem;
-  transition:background 0.15s;
+.group[data-expanded="true"]{box-shadow:var(--shadow-hover);}
+.group-header{
+  width:100%;display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:13px 16px;background:transparent;border:none;cursor:pointer;text-align:right;
+  min-height:44px;font-family:inherit;
+  transition:background .2s ease;
 }
-.group summary:hover{background:color-mix(in srgb, var(--accent) 6%, var(--surface));}
-.group summary::-webkit-details-marker{display:none;}
-.group summary .gname{
-  font-family:'Fraunces',Georgia,serif;
-  font-weight:600;
-  font-size:1.2rem;
+.group-header:hover{background:var(--bg);}
+.group-header:focus-visible{outline:2px solid var(--accent);outline-offset:-2px;}
+.group-header .gleft{display:flex;align-items:center;gap:10px;}
+.group-header .gicon{font-size:17px;color:var(--accent);}
+.group-header .gname{font-family:Heebo;font-weight:600;font-size:14px;color:var(--text);}
+.group-header .gcount{
+  font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--text-2);
+  background:var(--bg);border-radius:4px;padding:2px 7px;
 }
-.group summary .gname::after{
-  content:"▸";
-  display:inline-block;
-  margin-left:0.5rem;
-  font-size:0.75rem;
-  color:var(--accent);
-  transition:transform 0.2s;
-}
-.group[open] summary .gname::after{transform:rotate(90deg);}
-.group summary .gsource{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:0.78rem;
-  color:var(--muted);
-  text-align:right;
-  white-space:nowrap;
-}
-.grid{
-  display:grid;
-  grid-template-columns:repeat(auto-fill,minmax(260px,1fr));
-  gap:0.9rem;
-  padding:0 1.1rem 1.1rem;
-}
-.card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:1rem 1.1rem;
-  display:flex;
-  flex-direction:column;
-  gap:0.5rem;
-  transition:transform 0.18s ease-out,box-shadow 0.18s ease-out,border-color 0.18s ease-out;
-  animation:riseIn 0.4s ease-out both;
-}
-.card:hover{
-  transform:translateY(-3px);
-  border-color:var(--accent);
-  box-shadow:0 10px 24px -16px color-mix(in srgb, var(--accent) 55%, transparent);
-}
-.card h3{
-  font-family:'Fraunces',Georgia,serif;
-  font-weight:600;
-  font-size:1.08rem;
-  margin:0;
-  text-wrap:balance;
-}
-.card p{
-  margin:0;
-  font-size:0.86rem;
-  color:var(--muted);
-  line-height:1.4;
-}
-.card a.src{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:0.78rem;
-  color:var(--accent);
-  text-decoration:none;
-  word-break:break-all;
-}
-.card a.src:hover{text-decoration:underline;}
-.empty{
-  color:var(--muted);
-  font-size:0.9rem;
-  padding:2rem 0;
-  text-align:center;
-}
+.group-header .gcaret{font-size:17px;color:var(--text-2);transition:transform .2s ease;}
+.group[data-expanded="true"] .gcaret{transform:rotate(180deg);}
+.group-body{display:flex;flex-direction:column;gap:6px;padding:0 16px 12px;}
 
-/* tabs */
-.tabs{
-  display:flex;
-  gap:0.4rem;
-  margin-bottom:1.5rem;
-  border-bottom:1px solid var(--border);
-  animation:riseIn 0.5s ease-out both;
+.skill-row{
+  display:flex;align-items:flex-start;justify-content:space-between;gap:12px;
+  padding:9px 12px;background:var(--bg);border-radius:6px;text-decoration:none;
+  min-height:44px;box-shadow:var(--shadow-resting);
+  transition:box-shadow .2s ease, background .2s ease;
 }
-.tab{
-  font-family:'IBM Plex Sans',sans-serif;
-  font-weight:600;
-  font-size:0.92rem;
-  background:none;
-  border:none;
-  color:var(--muted);
-  padding:0.6rem 0.2rem;
-  margin-bottom:-1px;
-  border-bottom:2px solid transparent;
-  cursor:pointer;
-  transition:color 0.15s,border-color 0.15s;
-}
-.tab + .tab{margin-left:1.1rem;}
-.tab:hover{color:var(--ink);}
-.tab.active{color:var(--accent);border-color:var(--accent);}
-.view{display:none;}
-.view.active{display:block;}
+.skill-row:hover{background:var(--border);box-shadow:var(--shadow-hover);}
+.skill-row:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.skill-row .sname{font-family:Heebo;font-weight:600;font-size:13px;color:var(--text);display:block;}
+.skill-row .sdesc{font-family:Heebo;font-size:12px;color:var(--text-2);}
+.skill-row .sicon{font-size:15px;color:var(--accent);flex-shrink:0;margin-top:2px;transition:color .15s ease;}
+.skill-row:hover .sicon{color:var(--accent-2);}
 
 /* trending */
-.trend-note{
-  color:var(--muted);
-  font-size:0.88rem;
-  max-width:64ch;
-  margin:0 0 1.4rem;
-}
-.trend-list{display:flex;flex-direction:column;gap:0.75rem;}
+.trend-list{display:flex;flex-direction:column;gap:8px;}
 .trend-card{
-  background:var(--surface);
-  border:1px solid var(--border);
-  border-radius:10px;
-  padding:1rem 1.2rem;
-  display:grid;
-  grid-template-columns:2rem 1fr;
-  gap:0.9rem;
-  align-items:start;
-  transition:transform 0.18s ease-out,box-shadow 0.18s ease-out,border-color 0.18s ease-out;
-  animation:riseIn 0.4s ease-out both;
+  display:flex;align-items:flex-start;gap:14px;padding:13px 16px;
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  text-decoration:none;min-height:44px;box-shadow:var(--shadow-resting);
+  transition:box-shadow .2s ease, border-color .2s ease;
 }
-.trend-card:hover{
-  transform:translateY(-3px);
-  border-color:var(--accent2);
-  box-shadow:0 10px 24px -16px color-mix(in srgb, var(--accent2) 55%, transparent);
+.trend-card:hover{border-color:var(--accent);box-shadow:var(--shadow-hover);}
+.trend-card:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+.trend-card .trank{font-family:'JetBrains Mono',monospace;font-weight:500;font-size:14px;color:var(--accent);min-width:22px;}
+.trend-card .tbody{display:flex;flex-direction:column;gap:4px;flex:1;min-width:0;}
+.trend-card .thead{display:flex;align-items:center;gap:10px;flex-wrap:wrap;}
+.trend-card .tname{font-family:Heebo;font-weight:600;font-size:14px;color:var(--text);}
+.trend-card .taudience{
+  font-family:Heebo;font-size:11px;color:var(--accent);background:var(--bg);
+  border-radius:4px;padding:2px 7px;
 }
-.trend-card > div{display:flex;flex-direction:column;gap:0.15rem;}
-.trend-rank{
-  font-family:'Fraunces',Georgia,serif;
-  font-weight:700;
-  font-size:1.6rem;
-  color:var(--accent2);
-  line-height:1;
+.trend-card .tdesc{font-family:Heebo;font-size:12px;color:var(--text-2);}
+.trend-card .sicon{font-size:15px;color:var(--accent);flex-shrink:0;margin-top:2px;}
+
+/* empty state */
+.empty{
+  background:var(--surface);border:1px solid var(--border);border-radius:8px;
+  padding:44px 20px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;
 }
-.trend-card h3{
-  font-family:'Fraunces',Georgia,serif;
-  font-weight:600;
-  font-size:1.08rem;
-  margin:0;
+.empty i{font-size:28px;color:var(--text-2);}
+.empty .etitle{font-family:Heebo;font-weight:600;font-size:15px;color:var(--text);}
+.empty .esub{font-family:Heebo;font-size:13px;color:var(--text-2);max-width:280px;}
+.btn-outline{
+  font-family:Heebo;font-size:13px;color:var(--text);background:var(--surface);
+  border:1px solid var(--border);border-radius:8px;padding:8px 16px;cursor:pointer;min-height:44px;
+  box-shadow:var(--shadow-resting);
+  transition:box-shadow .2s ease, transform .15s ease, background .2s ease, border-color .2s ease;
 }
-.trend-card .trend-for{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:0.74rem;
-  color:var(--accent2);
-  text-transform:uppercase;
-  letter-spacing:0.03em;
+.btn-outline:hover{border-color:var(--accent);background:var(--bg);box-shadow:var(--shadow-hover);}
+.btn-outline:active{transform:scale(0.98);background:var(--border);}
+.btn-outline:focus-visible{outline:2px solid var(--accent);outline-offset:2px;}
+
+/* footer */
+footer{
+  border-top:1px solid var(--border);padding-top:14px;display:flex;justify-content:space-between;
+  gap:10px;flex-wrap:wrap;
 }
-.trend-card p{
-  margin:0.15rem 0 0;
-  font-size:0.86rem;
-  color:var(--muted);
-  line-height:1.4;
+footer .fnote{font-family:Heebo;font-size:12px;color:var(--text-2);}
+footer a{
+  font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--accent);text-decoration:none;
+  transition:color .15s ease;
 }
-.trend-card a.src{
-  font-family:'IBM Plex Mono',monospace;
-  font-size:0.78rem;
-  color:var(--accent);
-  text-decoration:none;
-  word-break:break-all;
+footer a:hover{color:var(--accent-2);text-decoration:underline;}
+
+@media (max-width:640px){
+  .head-row{flex-direction:column;}
+  .tabs{width:100%;}
+  .tab{flex:1;}
 }
-.trend-card a.src:hover{text-decoration:underline;}
-.trend-sources{
-  margin-top:1.2rem;
-  font-size:0.78rem;
-  color:var(--muted);
-  font-family:'IBM Plex Mono',monospace;
-}
-.trend-sources a{color:var(--muted);}
 </style>
 </head>
 <body>
 <div class="wrap">
-  <header>
-    <h1>Skill Shelf</h1>
-    <div class="rule"></div>
-    <p class="he">רשימה של כלים נוספים שהתקנו על קלוד, כדי שיידע לעשות דברים שהוא לא יודע לעשות מהקופסה. מחולק לפי החבילה שכל כלי הגיע איתה.</p>
-  </header>
 
-  <div class="tabs">
-    <button type="button" class="tab active he" data-view="shelf">מדף הסקילים</button>
-    <button type="button" class="tab he" data-view="trending">חם החודש — 30 הימים האחרונים</button>
+  <div class="head-row">
+    <div class="head-text">
+      <h1>מדף הכלים</h1>
+      <p>רשימה של כלים נוספים שהתקנו על קלוד, כדי שיידע לעשות דברים שהוא לא יודע לעשות מהקופסה. מחולק לפי החבילה שכל כלי הגיע איתה.</p>
+    </div>
   </div>
 
-  <div class="view active" id="view-shelf">
-    <div class="controls">
-      <button type="button" id="expandAll" class="he">הרחב הכול</button>
-      <button type="button" id="collapseAll" class="he">כווץ הכול</button>
+  <div class="tabs" role="tablist">
+    <button type="button" class="tab active" id="tabList" role="tab" aria-selected="true">רשימת כלים</button>
+    <button type="button" class="tab" id="tabTrending" role="tab" aria-selected="false">חם החודש</button>
+  </div>
+
+  <div id="viewList">
+    <div class="search-field" style="margin-bottom:16px;">
+      <i class="ph ph-magnifying-glass"></i>
+      <input type="text" id="searchInput" placeholder="חיפוש כלי...">
     </div>
 
-    <p class="trend-note he">הרשימה נשמרת ידנית. רוצים להוסיף כלי חדש? פשוט תבקשו מקלוד.</p>
-
-    <p class="count he" id="count"></p>
-    <div id="groups"></div>
-    <p class="empty he" id="empty" hidden>אין כאן כלום עדיין.</p>
+    <p class="count" id="count"></p>
+    <div id="groups" style="display:flex;flex-direction:column;gap:10px;"></div>
+    <div class="empty" id="empty" hidden>
+      <i class="ph ph-tray"></i>
+      <div class="etitle">לא נמצאו כלים</div>
+      <div class="esub">נסו מילה אחרת, או נקו את החיפוש כדי לראות את כל הרשימה.</div>
+      <button class="btn-outline" id="clearSearch">נקו חיפוש</button>
+    </div>
   </div>
 
-  <div class="view" id="view-trending">
-    <p class="trend-note he">חמישה כלים חדשים ופופולריים שיצאו בעולם של קלוד בחודש האחרון.</p>
+  <div id="viewTrending" hidden>
+    <p class="head-text" style="margin-bottom:16px;">
+      <span style="font-family:Heebo;font-size:14px;color:var(--text-2);">חמישה כלים חדשים ופופולריים שיצאו בעולם של קלוד בחודש האחרון.</span>
+    </p>
     <div class="trend-list" id="trendList"></div>
-    <p class="trend-sources he">עודכן לאחרונה: 8.9.2026. הרשימה הזו מתיישנת עם הזמן, כדאי לבדוק שוב מדי פעם.</p>
+    <p class="count" style="margin-top:14px;">עודכן לאחרונה: 8.9.2026. הרשימה הזו מתיישנת עם הזמן, כדאי לבדוק שוב מדי פעם.</p>
   </div>
+
+  <footer>
+    <span class="fnote">מקור: מעודכן ידנית על ידי הצוות</span>
+    <a href="https://github.com/AviRichkid/skill-shelf" dir="ltr">GitHub Pages</a>
+  </footer>
+
 </div>
 
 <script>
@@ -370,36 +262,11 @@ const skills = [
 ];
 
 const TRENDING = [
-  {
-    name: "Agent Plugins 1.0.0",
-    forWhom: "למי שבונה כלים משלו לקלוד",
-    description: "חברות גדולות (כולל Vercel, מיקרוסופט ו-OpenAI) הסכימו על צורה אחידה לבנות תוספים, כדי שאותו תוסף יעבוד בכל הכלים בלי לבנות אותו כמה פעמים.",
-    link: "https://github.com/agentplugins/agent-plugins-spec"
-  },
-  {
-    name: "find-skills",
-    forWhom: "לכולם — חוסך זמן",
-    description: "הכלי הכי פופולרי כרגע. הוא עוזר לקלוד לחפש כלי מוכן שכבר קיים, במקום להמציא פתרון חדש כל פעם מאפס.",
-    link: "https://github.com/vercel-labs/skills"
-  },
-  {
-    name: "pr-review-toolkit",
-    forWhom: "לצוותי פיתוח",
-    description: "כלי רשמי שבודק עבודה לפני שמסיימים אותה, מכל כיוון אפשרי — כדי לתפוס בעיות מוקדם.",
-    link: "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit"
-  },
-  {
-    name: "awesome-agent-skills",
-    forWhom: "למי שמחפש כלי מוכן",
-    description: "אוסף ענק של אלפי כלים מוכנים לשימוש. שווה לחפש שם לפני שמבקשים לבנות משהו חדש מאפס.",
-    link: "https://github.com/VoltAgent/awesome-agent-skills"
-  },
-  {
-    name: "claude-skills (380+ bundle)",
-    forWhom: "לתפקידים לא-טכניים (שיווק, שירות לקוחות, תפעול)",
-    description: "אוסף גדול של כלים שלא קשורים לפיתוח תוכנה — שימושי למי שרוצה עזרה בתחומים אחרים.",
-    link: "https://github.com/alirezarezvani/claude-skills"
-  }
+  { name: "Agent Plugins 1.0.0", forWhom: "למי שבונה כלים משלו לקלוד", description: "חברות גדולות (כולל Vercel, מיקרוסופט ו-OpenAI) הסכימו על צורה אחידה לבנות תוספים, כדי שאותו תוסף יעבוד בכל הכלים בלי לבנות אותו כמה פעמים.", link: "https://github.com/agentplugins/agent-plugins-spec" },
+  { name: "find-skills", forWhom: "לכולם — חוסך זמן", description: "הכלי הכי פופולרי כרגע. הוא עוזר לקלוד לחפש כלי מוכן שכבר קיים, במקום להמציא פתרון חדש כל פעם מאפס.", link: "https://github.com/vercel-labs/skills" },
+  { name: "pr-review-toolkit", forWhom: "לצוותי פיתוח", description: "כלי רשמי שבודק עבודה לפני שמסיימים אותה, מכל כיוון אפשרי — כדי לתפוס בעיות מוקדם.", link: "https://github.com/anthropics/claude-plugins-official/tree/main/plugins/pr-review-toolkit" },
+  { name: "awesome-agent-skills", forWhom: "למי שמחפש כלי מוכן", description: "אוסף ענק של אלפי כלים מוכנים לשימוש. שווה לחפש שם לפני שמבקשים לבנות משהו חדש מאפס.", link: "https://github.com/VoltAgent/awesome-agent-skills" },
+  { name: "claude-skills (380+ bundle)", forWhom: "לתפקידים לא-טכניים (שיווק, שירות לקוחות, תפעול)", description: "אוסף גדול של כלים שלא קשורים לפיתוח תוכנה — שימושי למי שרוצה עזרה בתחומים אחרים.", link: "https://github.com/alirezarezvani/claude-skills" }
 ];
 
 function escapeHtml(s){
@@ -408,77 +275,106 @@ function escapeHtml(s){
 
 function groupBy(list){
   const groups = {};
-  list.forEach(s => {
-    const g = s.group || 'Ungrouped';
-    (groups[g] = groups[g] || []).push(s);
-  });
+  list.forEach(s => { (groups[s.group] = groups[s.group] || []).push(s); });
   return groups;
 }
+
+const expanded = { Superpowers: true, Ponytail: false };
+let query = "";
 
 function render(){
   const wrap = document.getElementById('groups');
   const empty = document.getElementById('empty');
   const count = document.getElementById('count');
-  const groups = groupBy(skills);
+  const q = query.trim().toLowerCase();
+
+  const filtered = skills.filter(s =>
+    !q || s.name.toLowerCase().includes(q) || s.description.toLowerCase().includes(q) || s.group.toLowerCase().includes(q)
+  );
+  const groups = groupBy(filtered);
   const names = Object.keys(groups).sort((a,b) => a.localeCompare(b));
 
-  count.textContent = `${skills.length} סקילים · ${names.length} תוספים`;
-  empty.hidden = skills.length !== 0;
+  count.textContent = `${filtered.length} סקילים · ${names.length} תוספים`;
+  empty.hidden = filtered.length !== 0;
+  wrap.hidden = filtered.length === 0;
 
-  wrap.innerHTML = names.map((name, gi) => {
-    const items = groups[name].slice().sort((a,b) => (a.name||'').localeCompare(b.name||''));
-    const source = items[0] && items[0].link ? items[0].link : '';
+  wrap.innerHTML = names.map(name => {
+    const items = groups[name].slice().sort((a,b) => a.name.localeCompare(b.name));
+    const isOpen = q ? true : !!expanded[name];
     return `
-    <details class="group" open style="animation-delay:${Math.min(gi*70,350)}ms">
-      <summary>
-        <span class="gname">${escapeHtml(name)} <span style="font-family:'IBM Plex Mono',monospace;font-weight:400;font-size:0.8rem;color:var(--muted);">${items.length} סקילים</span></span>
-        <span class="gsource">${escapeHtml(source)}</span>
-      </summary>
-      <div class="grid">
-        ${items.map((s, ci) => `
-          <div class="card" style="animation-delay:${Math.min(ci*45,300)}ms">
-            <h3>${escapeHtml(s.name)}</h3>
-            <p class="he">${escapeHtml(s.description)}</p>
-            <a class="src" href="${escapeHtml(s.link)}" target="_blank" rel="noopener">${escapeHtml(s.link)}</a>
-          </div>
-        `).join('')}
-      </div>
-    </details>`;
+    <div class="group" data-group="${escapeHtml(name)}" data-expanded="${isOpen}">
+      <button class="group-header" data-toggle="${escapeHtml(name)}" aria-expanded="${isOpen}">
+        <span class="gleft">
+          <i class="ph ph-folder-simple gicon"></i>
+          <span class="gname" dir="ltr">${escapeHtml(name)}</span>
+          <span class="gcount">${items.length}</span>
+        </span>
+        <i class="ph ph-caret-down gcaret"></i>
+      </button>
+      ${isOpen ? `<div class="group-body">${items.map(s => `
+        <a class="skill-row" href="${escapeHtml(s.link)}" target="_blank" rel="noopener">
+          <span style="display:flex;flex-direction:column;gap:3px;">
+            <span class="sname" dir="ltr">${escapeHtml(s.name)}</span>
+            <span class="sdesc">${escapeHtml(s.description)}</span>
+          </span>
+          <i class="ph ph-arrow-square-out sicon"></i>
+        </a>
+      `).join('')}</div>` : ''}
+    </div>`;
   }).join('');
-}
 
-document.getElementById('expandAll').addEventListener('click', () => {
-  document.querySelectorAll('.group').forEach(d => d.open = true);
-});
-document.getElementById('collapseAll').addEventListener('click', () => {
-  document.querySelectorAll('.group').forEach(d => d.open = false);
-});
+  wrap.querySelectorAll('[data-toggle]').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const key = btn.dataset.toggle;
+      expanded[key] = !expanded[key];
+      render();
+    });
+  });
+}
 
 function renderTrending(){
   document.getElementById('trendList').innerHTML = TRENDING.map((t, i) => `
-    <div class="trend-card" style="animation-delay:${i*60}ms">
-      <span class="trend-rank">${i+1}</span>
-      <div>
-        <h3>${escapeHtml(t.name)}</h3>
-        <div class="trend-for he">${escapeHtml(t.forWhom)}</div>
-        <p class="he">${escapeHtml(t.description)}</p>
-        <a class="src" href="${escapeHtml(t.link)}" target="_blank" rel="noopener">${escapeHtml(t.link)}</a>
-      </div>
-    </div>
+    <a class="trend-card" href="${escapeHtml(t.link)}" target="_blank" rel="noopener">
+      <span class="trank" dir="ltr">${String(i+1).padStart(2,'0')}</span>
+      <span class="tbody">
+        <span class="thead">
+          <span class="tname" dir="ltr">${escapeHtml(t.name)}</span>
+          <span class="taudience">${escapeHtml(t.forWhom)}</span>
+        </span>
+        <span class="tdesc">${escapeHtml(t.description)}</span>
+      </span>
+      <i class="ph ph-arrow-square-out sicon"></i>
+    </a>
   `).join('');
 }
 
-document.querySelectorAll('.tab').forEach(btn => {
-  btn.addEventListener('click', () => {
-    document.querySelectorAll('.tab').forEach(b => b.classList.remove('active'));
-    document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
-    btn.classList.add('active');
-    document.getElementById('view-' + btn.dataset.view).classList.add('active');
-  });
+document.getElementById('searchInput').addEventListener('input', (e) => {
+  query = e.target.value;
+  render();
+});
+document.getElementById('clearSearch').addEventListener('click', () => {
+  query = "";
+  document.getElementById('searchInput').value = "";
+  render();
 });
 
-renderTrending();
+const tabList = document.getElementById('tabList');
+const tabTrending = document.getElementById('tabTrending');
+tabList.addEventListener('click', () => {
+  tabList.classList.add('active'); tabList.setAttribute('aria-selected','true');
+  tabTrending.classList.remove('active'); tabTrending.setAttribute('aria-selected','false');
+  document.getElementById('viewList').hidden = false;
+  document.getElementById('viewTrending').hidden = true;
+});
+tabTrending.addEventListener('click', () => {
+  tabTrending.classList.add('active'); tabTrending.setAttribute('aria-selected','true');
+  tabList.classList.remove('active'); tabList.setAttribute('aria-selected','false');
+  document.getElementById('viewTrending').hidden = false;
+  document.getElementById('viewList').hidden = true;
+});
+
 render();
+renderTrending();
 </script>
 </body>
 </html>
