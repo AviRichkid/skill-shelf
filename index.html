@@ -718,9 +718,9 @@ const installRepoLink = document.getElementById('installRepoLink');
 
 function buildHelpPrompt(groupName, info, fallbackLink){
   if (info){
-    return `אני מנסה להתקין את החבילה "${groupName}" בקלוד קוד שלי, ואני לא בטוח/ה שזה עבד או שנתקעתי באמצע. אלו הפקודות שאני אמור/ה להריץ:\n${info.steps.map((s,i)=>`${i+1}. ${s}`).join('\n')}\n\nתבדוק/י בשבילי מה קיים ומה חסר אצלי, תסביר/י לי בשפה פשוטה מה קורה, ותדריך/י אותי צעד אחר צעד עד שזה יעבוד — ואם אפשר, תעשה/י כמה שיותר מהתהליך בעצמך במקומי.`;
+    return `אני צריך שתתקין/י לי את החבילה "${groupName}" בקלוד קוד. אלו הפקודות הרשמיות להתקנה:\n${info.steps.map((s,i)=>`${i+1}. ${s}`).join('\n')}\n\nתעבור/י על כל השלבים בעצמך, תבדוק/י שהכל מותקן ועובד נכון, ותטפל/י בכל בעיה שתתעורר בדרך בעצמך. אני לא רוצה להתעסק עם זה בעצמי — תדאג/י לכל התהליך מתחילתו ועד סופו ותגיד/י לי רק כשזה מוכן.`;
   }
-  return `אני מנסה להתקין כלי מהריפו הזה: ${fallbackLink} ואני לא בטוח/ה איך עושים את זה או שנתקעתי באמצע. תבדוק/י בשבילי מה קיים ומה חסר אצלי, תסביר/י לי בשפה פשוטה מה קורה, ותדריך/י אותי צעד אחר צעד עד שזה יעבוד — ואם אפשר, תעשה/י כמה שיותר מהתהליך בעצמך במקומי.`;
+  return `אני צריך שתתקין/י לי כלי מהריפו הזה: ${fallbackLink}. תעבור/י על כל השלבים בעצמך, תבדוק/י שהכל מותקן ועובד נכון, ותטפל/י בכל בעיה שתתעורר בדרך בעצמך. אני לא רוצה להתעסק עם זה בעצמי — תדאג/י לכל התהליך מתחילתו ועד סופו ותגיד/י לי רק כשזה מוכן.`;
 }
 
 function openInstallModal(groupName, fallbackLink){
@@ -731,8 +731,8 @@ function openInstallModal(groupName, fallbackLink){
   const helpPrompt = buildHelpPrompt(groupName, info, fallbackLink);
   const helpBlockHtml = `
     <div class="help-block">
-      <div class="help-title"><i class="ph ph-lifebuoy"></i>נתקעתם? הכי קל — תנו לקלוד להדריך אתכם</div>
-      <p>העתיקו את ההודעה הבאה והדביקו אותה בשיחה עם קלוד שלכם. הוא יבדוק מה חסר, יסביר בשפה פשוטה, וילווה אתכם צעד אחר צעד — ואפילו יעשה חלק מהעבודה בעצמו.</p>
+      <div class="help-title"><i class="ph ph-lifebuoy"></i>הכי קל — תגידו לקלוד שלכם לעשות הכל בשבילכם</div>
+      <p>העתיקו את ההודעה הבאה והדביקו אותה בשיחה עם קלוד שלכם. הוא יבצע את כל ההתקנה בעצמו, מתחילתו ועד סופו — אתם לא צריכים להבין שום פקודה.</p>
       <div class="install-cmd">
         <code dir="rtl" style="white-space:pre-wrap;">${escapeHtml(helpPrompt)}</code>
         <button type="button" class="copy-btn" data-copy="${escapeHtml(helpPrompt)}" style="align-self:flex-start;">העתקה</button>
