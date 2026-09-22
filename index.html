@@ -181,7 +181,8 @@ body{
 .empty .etitle{font-family:Heebo;font-weight:600;font-size:15px;color:var(--text);}
 .empty .esub{font-family:Heebo;font-size:13px;color:var(--text-2);max-width:280px;}
 .btn-outline{
-  font-family:Heebo;font-size:13px;color:var(--text);background:var(--surface);
+  display:flex;align-items:center;gap:8px;
+  font-family:Heebo;font-weight:600;font-size:13px;color:var(--text);background:var(--surface);
   border:1px solid var(--border);border-radius:8px;padding:8px 16px;cursor:pointer;min-height:44px;
   box-shadow:var(--shadow-resting);
   transition:box-shadow .2s ease, transform .15s ease, background .2s ease, border-color .2s ease;
@@ -265,10 +266,16 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
       <button type="button" class="tab active" id="tabList" role="tab" aria-selected="true">רשימת כלים</button>
       <button type="button" class="tab" id="tabTrending" role="tab" aria-selected="false">חם החודש</button>
     </div>
-    <button type="button" class="btn-primary" id="openAdd">
-      <i class="ph ph-plus"></i>
-      הוסף כלי חדש
-    </button>
+    <div style="display:flex;align-items:center;gap:10px;">
+      <button type="button" class="btn-outline" id="openFeedback">
+        <i class="ph ph-chat-circle-text" style="color:var(--accent);"></i>
+        משוב / רעיון
+      </button>
+      <button type="button" class="btn-primary" id="openAdd">
+        <i class="ph ph-plus"></i>
+        הוסף כלי חדש
+      </button>
+    </div>
   </div>
 
   <div class="modal-overlay" id="modalOverlay" hidden>
@@ -334,12 +341,7 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
 
   <footer>
     <span class="fnote">מקור: מעודכן ידנית על ידי הצוות</span>
-    <div style="display:flex;align-items:center;gap:14px;">
-      <button type="button" class="fnote" id="openFeedback" style="background:none;border:none;padding:0;cursor:pointer;text-decoration:underline;color:var(--text-2);font-family:Heebo;">
-        <i class="ph ph-chat-circle-text" style="vertical-align:-2px;"></i> משוב / רעיון
-      </button>
-      <a href="https://github.com/AviRichkid/skill-shelf" dir="ltr">GitHub Pages</a>
-    </div>
+    <a href="https://github.com/AviRichkid/skill-shelf" dir="ltr">GitHub Pages</a>
   </footer>
 
   <div class="modal-overlay" id="feedbackOverlay" hidden>
