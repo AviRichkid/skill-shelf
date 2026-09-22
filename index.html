@@ -356,9 +356,10 @@ footer a:hover{color:var(--accent-2);text-decoration:underline;}
           <label for="fb-name">שם (לא חובה)</label>
           <input id="fb-name" maxlength="60" placeholder="השם שלכם">
         </div>
+        <div class="modal-msg" id="feedbackMsg"></div>
         <div class="modal-actions">
           <button type="button" class="btn-outline" id="cancelFeedback">ביטול</button>
-          <button type="submit" class="btn-primary">שליחה</button>
+          <button type="submit" class="btn-primary" id="submitFeedback">שליחה</button>
         </div>
       </form>
     </div>
@@ -626,15 +627,42 @@ document.getElementById('cancelFeedback').addEventListener('click', () => {
   feedbackForm.reset();
 });
 feedbackOverlay.addEventListener('click', (e) => { if (e.target === feedbackOverlay) { feedbackOverlay.hidden = true; feedbackForm.reset(); } });
-feedbackForm.addEventListener('submit', (e) => {
+const TELEGRAM_BOT_TOKEN = "8882831433:AAHNrBXlxgxo7FJYsI43UNHwZT7zr84zCPQ";
+const TELEGRAM_CHAT_ID = "1540403188";
+const feedbackMsg = document.getElementById('feedbackMsg');
+const submitFeedback = document.getElementById('submitFeedback');
+
+feedbackForm.addEventListener('submit', async (e) => {
   e.preventDefault();
   const message = document.getElementById('fb-message').value.trim();
   const name = document.getElementById('fb-name').value.trim();
-  const subject = encodeURIComponent('משוב על Skill Shelf');
-  const body = encodeURIComponent((name ? `מאת: ${name}\n\n` : '') + message);
-  window.location.href = `mailto:avi@richkid.co.il?subject=${subject}&body=${body}`;
-  feedbackOverlay.hidden = true;
-  feedbackForm.reset();
+  if (!message) return;
+
+  const text = `📬 משוב חדש ב-Skill Shelf${name ? `\nמאת: ${name}` : ''}\n\n${message}`;
+
+  submitFeedback.disabled = true;
+  feedbackMsg.textContent = 'שולח…';
+  feedbackMsg.className = 'modal-msg';
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text })
+    });
+    if (!res.ok) throw new Error('Telegram API error');
+    feedbackMsg.textContent = 'נשלח, תודה!';
+    feedbackMsg.className = 'modal-msg';
+    setTimeout(() => {
+      feedbackOverlay.hidden = true;
+      feedbackForm.reset();
+      feedbackMsg.textContent = '';
+    }, 1200);
+  } catch (err) {
+    feedbackMsg.textContent = 'לא הצלחנו לשלוח — נסו שוב.';
+    feedbackMsg.className = 'modal-msg err';
+  } finally {
+    submitFeedback.disabled = false;
+  }
 });
 
 /* theme toggle */
